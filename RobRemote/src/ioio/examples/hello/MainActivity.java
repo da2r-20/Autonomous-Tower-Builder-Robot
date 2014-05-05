@@ -59,7 +59,12 @@ public class MainActivity extends IOIOActivity {
     private static final int PRESSED_DOWN = 2;
     private static final int PRESSED_LEFT = 4;
     private static final int PRESSED_RIGHT = 8;
-
+    
+    //pptentiometer pwm pins
+    private static final int WRIST_PWM_PIN = 38;
+    private static final int ELBOW_PWM_PIN = 37;
+    private static final int SHOLDER_PWM_PIN = 36;
+    
     //fields
     private Button chassiUpButton_;
     private Button chassiDownButton_;
@@ -92,7 +97,7 @@ public class MainActivity extends IOIOActivity {
 		chassiLeftButton_ = (Button) findViewById(R.id.Left);
 		chassiRightButton_ = (Button) findViewById(R.id.Right);
 		chassiSpeedSeekBar_ = (SeekBar) findViewById(R.id.speedSeekBar);
-		chassiSpeedSeekBar_.setProgress(0);
+		chassiSpeedSeekBar_.setProgress(100);
 		
 		armTurnRight = (Button) findViewById(R.id.TurnRight);
 		armTurnLeft = (Button) findViewById(R.id.TurnLeft);
@@ -115,36 +120,46 @@ public class MainActivity extends IOIOActivity {
 		private SmallMotorDriver sholder_and_elbow;
 		private SmallMotorDriver wrist_and_grasp;
 		private RoboticArmEdge arm;
-
+		private ChassisFrame chassis;
+		private MovmentSystem movment;
 
 		protected void setup() throws ConnectionLostException {
 			chassiFront = new BigMotorDriver(ioio_, FRONT_CHASSIS_M1_PIN, FRONT_CHASSIS_E1_PIN, FRONT_CHASSIS_M2_PIN, FRONT_CHASSIS_E2_PIN);
 			chassiBack = new BigMotorDriver(ioio_, BACK_CHASSIS_M1_PIN, BACK_CHASSIS_E1_PIN, BACK_CHASSIS_M2_PIN, BACK_CHASSIS_E2_PIN);
-
+			chassis = new ChassisFrame(chassiFront, chassiBack);
+			
 			turn_and_led = new SmallMotorDriver(ioio_, TURN_A01_PIN, TURN_A02_PIN, LED_B01_PIN, LED_B02_PIN);
 			sholder_and_elbow = new SmallMotorDriver(ioio_, SHOLDER_A01_PIN, SHOLDER_A02_PIN, ELBOW_B01_PIN, ELBOW_B02_PIN);
 			wrist_and_grasp = new SmallMotorDriver(ioio_, WRIST_A01_PIN, WRIST_A02_PIN, GRASP_B01_PIN, GRASP_B02_PIN);
+			// opening the arm standby pin  
 			ioio_.openDigitalOutput(ARM_STBY, true);
+			movment = new MovmentSystem(ioio_, chassis, arm, WRIST_PWM_PIN, ELBOW_PWM_PIN, SHOLDER_PWM_PIN);
+			
+			ioio_.openPwmOutput(7, 100);
 			
 			// arm = new RoboticArmEdge(ioio_, turn_and_led, sholder_and_elbow, wrist_and_grasp, ARM_STBY);
 		}
 		
 		public void loop() throws ConnectionLostException {
-
+		
 			//ensures that loop runs only if systemEnabled button is pressed
 			if (!systemEnabled.isChecked()) {
-				chassiBack.stop();
-				chassiFront.stop();
+				chassis.stop();
 				turn_and_led.stop();
 				try {
 					Thread.sleep(10);
-					
+									
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				return;
 			}
-
+//			try {
+//				System.out.println(movment.get_wristPosition());
+//			} catch (InterruptedException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}	
 			turn_and_led.turnMotorA(armTurnLeft.isPressed(), armTurnRight.isPressed());
 			turn_and_led.turnMotorB(ledOnOff.isChecked(), false);
 			sholder_and_elbow.turnMotorA(armSholderUp.isPressed(), armSholderDown.isPressed());
@@ -155,30 +170,36 @@ public class MainActivity extends IOIOActivity {
 			//Chassis part
 			int buttonState =  (chassiUpButton_.isPressed()? 0x1:0x0) + (chassiDownButton_.isPressed()? 0x2:0x0) + (chassiLeftButton_.isPressed()? 0x4:0x0) + (chassiRightButton_.isPressed()? 0x8:0x0);
 			if (buttonState == PRESSED_UP){
-				chassiFront.turnBothMotors(TURN_LEFT);
-				chassiBack.turnBothMotors(TURN_RIGHT);
+//				chassiFront.turnBothMotors(TURN_LEFT);
+//				chassiBack.turnBothMotors(TURN_RIGHT);
+				chassis.driveForward();
 			}
 			else if((buttonState == PRESSED_DOWN)){
-				chassiFront.turnBothMotors(TURN_RIGHT);
-				chassiBack.turnBothMotors(TURN_LEFT);
+//				chassiFront.turnBothMotors(TURN_RIGHT);
+//				chassiBack.turnBothMotors(TURN_LEFT);
+				chassis.driveBackwards();
 			}
 			else if(buttonState == PRESSED_LEFT){
-				chassiFront.turnBothMotorsOposite(TURN_RIGHT);
-				chassiBack.turnBothMotorsOposite(TURN_LEFT);
+//				chassiFront.turnBothMotorsOposite(TURN_RIGHT);
+//				chassiBack.turnBothMotorsOposite(TURN_LEFT);
+				chassis.turnLeft();
 				
 			}
 			else if(buttonState == PRESSED_RIGHT){
-				chassiFront.turnBothMotorsOposite(TURN_LEFT);
-				chassiBack.turnBothMotorsOposite(TURN_RIGHT);
+//				chassiFront.turnBothMotorsOposite(TURN_LEFT);
+//				chassiBack.turnBothMotorsOposite(TURN_RIGHT);
+				chassis.turnRight();
 			}
 			else{}
 			
 			//Chassis speed
 			float newSpeed = ((buttonState & 15)!=0? 1:0) * ((float) chassiSpeedSeekBar_.getProgress()/100);
-			chassiFront.setMotorA_speed(newSpeed);
-			chassiBack.setMotorA_speed(newSpeed);
-			chassiFront.setMotorB_speed(newSpeed);
-			chassiBack.setMotorB_speed(newSpeed);
+//			chassiFront.setMotorA_speed(newSpeed);
+//			chassiBack.setMotorA_speed(newSpeed);
+//			chassiFront.setMotorB_speed(newSpeed);
+//			chassiBack.setMotorB_speed(newSpeed);
+			chassis.setSpeed(newSpeed);
+		
 			
 			try {
 				Thread.sleep(10);
