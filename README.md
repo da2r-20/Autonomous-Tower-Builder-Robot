@@ -1,4 +1,7 @@
-MagicalRobot
+
+![](https://drive.google.com/uc?export=download&id=0B63Dw65h1VABQ1BLZzRmUEw0N2M)
+
+Magical Robot
 ============
 
 We are 4 Computer-Science students from Ben-Gurion University, Israel.<br>
@@ -9,7 +12,7 @@ The project is based on the IOIO framework which uses an android phone as a proc
 the final goal is to build an application that takes an array of colors as an input, 
 searches for cubes that has the same colors and builds a tower according to that array.
 
-Project Goal
+Project Goals
 ------------
 <ul>
 	<li><del>read material </del></li>
