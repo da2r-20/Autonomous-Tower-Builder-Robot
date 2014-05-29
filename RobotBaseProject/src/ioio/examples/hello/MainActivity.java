@@ -18,21 +18,6 @@ import android.widget.ToggleButton;
 //holds all the buttons that needs listening to
 public class MainActivity extends IOIOActivity {
 	
-	//movment limitations
-	private static final float SHOLDER_LIM_UP = (float) 0.79;
-	private static final float SHOLDER_LIM_DOWN = (float) 0.63;
-	private static final float ELBOW_LIM_UP = (float) 0.11;
-	private static final float ELBOW_LIM_DOWN = (float) 0.10;
-	private static final float WRIST_LIM_UP = 36;
-	private static final float WRIST_LIM_DOWN = 0;
-	
-
-
-	//potentiometer pins
-	private static final int SHOLDER_POT_PIN = 36;
-	private static final int ELBOW_POT_PIN = 37;
-	private static final int WRIST_POT_PIN = 38;
-
 	//arm pins
 	private static final int ARM_STBY = 31;
 	private static final int ARM_PWM = 28;
@@ -78,7 +63,7 @@ public class MainActivity extends IOIOActivity {
     private static final int PRESSED_LEFT = 4;
     private static final int PRESSED_RIGHT = 8;
 
-    //GUI fields
+    //fields
     private Button chassiUpButton_;
     private Button chassiDownButton_;
 	private Button chassiLeftButton_;
@@ -133,10 +118,6 @@ public class MainActivity extends IOIOActivity {
 		private SmallMotorDriver sholder_and_elbow;
 		private SmallMotorDriver wrist_and_grasp;
 		private RoboticArmEdge arm;
-		AnalogInput sholder_pot;
-		AnalogInput elbow_pot;
-		AnalogInput wrist_pot;
-		
 
 
 		protected void setup() throws ConnectionLostException {
@@ -149,23 +130,10 @@ public class MainActivity extends IOIOActivity {
 			ioio_.openDigitalOutput(ARM_STBY, true);
 			
 			ioio_.openPwmOutput(ARM_PWM, 100).setDutyCycle((float)100);
-			
-			sholder_pot = ioio_.openAnalogInput(SHOLDER_POT_PIN);
-			elbow_pot = ioio_.openAnalogInput(ELBOW_POT_PIN);
-			wrist_pot = ioio_.openAnalogInput(WRIST_POT_PIN);
-			
 		}
 		
 		public void loop() throws ConnectionLostException {
-			try{
-				System.out.println("sholder " + sholder_pot.read());
-				System.out.println("elbow " + elbow_pot.read());
-				System.out.println("wrist " + wrist_pot.read());
-				
-			} catch (Exception e){
 
-			}
-			
 			//ensures that loop runs only if systemEnabled button is pressed
 			if (!systemEnabled.isChecked()) {
 				chassiBack.stop();
