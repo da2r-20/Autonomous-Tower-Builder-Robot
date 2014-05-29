@@ -26,7 +26,10 @@ public class MainActivity extends IOIOActivity {
 	private static final float WRIST_LIM_UP = 36;
 	private static final float WRIST_LIM_DOWN = 0;
 	
+
+	
 	//potentiometer pins
+	private static final int DISTANCE_PIN = 35;
 	private static final int SHOLDER_POT_PIN = 36;
 	private static final int ELBOW_POT_PIN = 37;
 	private static final int WRIST_POT_PIN = 38;
@@ -125,39 +128,27 @@ public class MainActivity extends IOIOActivity {
 
 	// holds all the components connected to the IOIO and responsible for their update
 	class Looper extends BaseIOIOLooper {
-		private SmallMotorDriver turn_and_led;
-		private SmallMotorDriver sholder_and_elbow;
-		private SmallMotorDriver wrist_and_grasp;
-		private ChassisFrame chasiss;
-		AnalogInput sholder_pot;
-		AnalogInput elbow_pot;
-		AnalogInput wrist_pot;
-		
-		RoboticArmEdge arm;
-		
+		private ChassisFrame _chasiss;
+		private RoboticArmEdge _arm;
+		private MovmentSystem _movmentModule;
 		
 
 
 		protected void setup() throws ConnectionLostException {
 			BigMotorDriver chassiFront = new BigMotorDriver(ioio_, FRONT_CHASSIS_M1_PIN, FRONT_CHASSIS_E1_PIN, FRONT_CHASSIS_M2_PIN, FRONT_CHASSIS_E2_PIN);
 			BigMotorDriver chassiBack = new BigMotorDriver(ioio_, BACK_CHASSIS_M1_PIN, BACK_CHASSIS_E1_PIN, BACK_CHASSIS_M2_PIN, BACK_CHASSIS_E2_PIN);
-			chasiss = new ChassisFrame(chassiFront, chassiBack);
+			_chasiss = new ChassisFrame(chassiFront, chassiBack);
 			
-			turn_and_led = new SmallMotorDriver(ioio_, TURN_A01_PIN, TURN_A02_PIN, LED_B01_PIN, LED_B02_PIN);
-			sholder_and_elbow = new SmallMotorDriver(ioio_, SHOLDER_A01_PIN, SHOLDER_A02_PIN, ELBOW_B01_PIN, ELBOW_B02_PIN);
-			wrist_and_grasp = new SmallMotorDriver(ioio_, WRIST_A01_PIN, WRIST_A02_PIN, GRASP_B01_PIN, GRASP_B02_PIN);
-			arm = new RoboticArmEdge(ioio_, wrist_and_grasp, sholder_and_elbow, turn_and_led, ARM_STBY, ARM_PWM);
-
-			
-			sholder_pot = ioio_.openAnalogInput(SHOLDER_POT_PIN);
-			elbow_pot = ioio_.openAnalogInput(ELBOW_POT_PIN);
-			wrist_pot = ioio_.openAnalogInput(WRIST_POT_PIN);
-			
+			SmallMotorDriver turn_and_led = new SmallMotorDriver(ioio_, TURN_A01_PIN, TURN_A02_PIN, LED_B01_PIN, LED_B02_PIN);
+			SmallMotorDriver sholder_and_elbow = new SmallMotorDriver(ioio_, SHOLDER_A01_PIN, SHOLDER_A02_PIN, ELBOW_B01_PIN, ELBOW_B02_PIN);
+			SmallMotorDriver wrist_and_grasp = new SmallMotorDriver(ioio_, WRIST_A01_PIN, WRIST_A02_PIN, GRASP_B01_PIN, GRASP_B02_PIN);
+			_arm = new RoboticArmEdge(ioio_, wrist_and_grasp, sholder_and_elbow, turn_and_led, ARM_STBY, ARM_PWM);
+			_movmentModule = new MovmentSystem(ioio_, _chasiss, _arm, WRIST_POT_PIN, SHOLDER_POT_PIN, ELBOW_POT_PIN, DISTANCE_PIN);
 		}
 		
 		public void loop() throws ConnectionLostException {
 			try{
-				System.out.println("distance " + sholder_pot.read());
+				System.out.println("distance " + _movmentModule.get_distance());
 //				System.out.println("elbow " + elbow_pot.read());
 //				System.out.println("wrist " + wrist_pot.read());
 				
@@ -167,8 +158,8 @@ public class MainActivity extends IOIOActivity {
 			
 			//ensures that loop runs only if systemEnabled button is pressed
 			if (!systemEnabled.isChecked()) {
-				chasiss.stop();
-				arm.stop();
+				_chasiss.stop();
+				_arm.stop();
 				try {
 					Thread.sleep(10);
 				} catch (InterruptedException e) {
@@ -178,38 +169,38 @@ public class MainActivity extends IOIOActivity {
 			}
 
 			if (armWristUp.isPressed()){
-				arm.wristUp();
+				_arm.wristUp();
 			} else if (armWristDown.isPressed()){
-				arm.wristDown();
+				_arm.wristDown();
 			}
 			
-			arm.turnTurning(armTurnLeft.isPressed(), armTurnRight.isPressed());
-			arm.toggleLed(ledOnOff.isChecked());
-			arm.turnSholder(armSholderUp.isPressed(), armSholderDown.isPressed());
-			arm.turnElbow(armElbowUp.isPressed(), armElbowDown.isPressed());
-			arm.turnWrist(armWristUp.isPressed(), armWristDown.isPressed());
-			arm.turnGrasp(armRelease.isPressed(), armGrasp.isPressed());
+			_arm.turnTurning(armTurnLeft.isPressed(), armTurnRight.isPressed());
+			_arm.toggleLed(ledOnOff.isChecked());
+			_arm.turnSholder(armSholderUp.isPressed(), armSholderDown.isPressed());
+			_arm.turnElbow(armElbowUp.isPressed(), armElbowDown.isPressed());
+			_arm.turnWrist(armWristUp.isPressed(), armWristDown.isPressed());
+			_arm.turnGrasp(armRelease.isPressed(), armGrasp.isPressed());
 
 			
 			//Chassis part
 			int buttonState =  (chassiUpButton_.isPressed()? 0x1:0x0) + (chassiDownButton_.isPressed()? 0x2:0x0) + (chassiLeftButton_.isPressed()? 0x4:0x0) + (chassiRightButton_.isPressed()? 0x8:0x0);
 			if (buttonState == PRESSED_UP){
-				chasiss.driveForward();
+				_chasiss.driveForward();
 			}
 			else if((buttonState == PRESSED_DOWN)){
-				chasiss.driveBackwards();
+				_chasiss.driveBackwards();
 			}
 			else if(buttonState == PRESSED_LEFT){
-				chasiss.turnLeft();
+				_chasiss.turnLeft();
 			}
 			else if(buttonState == PRESSED_RIGHT){
-				chasiss.turnRight();
+				_chasiss.turnRight();
 			}
 			else{}
 			
 			//Chassis speed
 			float newSpeed = ((buttonState & 15)!=0? 1:0) * ((float) chassiSpeedSeekBar_.getProgress()/100);
-			chasiss.setSpeed(newSpeed);			
+			_chasiss.setSpeed(newSpeed);			
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {

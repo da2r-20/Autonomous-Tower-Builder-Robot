@@ -5,27 +5,38 @@ import ioio.lib.api.IOIO;
 import ioio.lib.api.exception.ConnectionLostException;
 
 public class MovmentSystem {
+	private static final float SHOLDER_LIM_UP = (float) 0.79;
+	private static final float SHOLDER_LIM_DOWN = (float) 0.63;
+	private static final float ELBOW_LIM_UP = (float) 0.11;
+	private static final float ELBOW_LIM_DOWN = (float) 0.10;
+	private static final float WRIST_LIM_UP = 36;
+	private static final float WRIST_LIM_DOWN = 0;
+	
+
 	private ChassisFrame _chassis;
 	private RoboticArmEdge _arm;
 	private AnalogInput _wristPosition;
 	private AnalogInput _sholderPosition;
 	private AnalogInput _elbowPosition;
-	private static final float ELBOW_MAX_UP = 0;
-	private static final float ELBOW_MAX_DOWN = 0;
-	private static final float WRIST_MAX_UP = 0;
-	private static final float WRIST_MAX_DOWN = 0;
-	private static final float SHOLDER_MAX_UP = 0;
-	private static final float SHOLDER_MAX_DOWN = 0;
+	private AnalogInput _distance;
+		
 	
-	public MovmentSystem(IOIO ioio, ChassisFrame chassis, RoboticArmEdge arm, int wristP_num, int elbowP_num, int sholderP_num) throws ConnectionLostException {
+
+
+	public MovmentSystem(IOIO ioio, ChassisFrame chassis, RoboticArmEdge arm, int wristPositionPin, int sholderPositionPin, int elbowPositionPin, int distancePin) {
+		// TODO Auto-generated constructor stub
 		_chassis = chassis;
 		_arm = arm;
-		_elbowPosition = ioio.openAnalogInput(elbowP_num);
-		_sholderPosition = ioio.openAnalogInput(sholderP_num);
-		_wristPosition= ioio.openAnalogInput(wristP_num);
 		
+		try {
+			_wristPosition = ioio.openAnalogInput(wristPositionPin);
+			_sholderPosition = ioio.openAnalogInput(sholderPositionPin);
+			_elbowPosition = ioio.openAnalogInput(elbowPositionPin);
+			_distance = ioio.openAnalogInput(distancePin);
+		} catch (ConnectionLostException e) {
+			e.printStackTrace();
+		}
 	}
-	
 	
 	public RoboticArmEdge get_arm() {
 		return _arm;
@@ -34,7 +45,6 @@ public class MovmentSystem {
 	public ChassisFrame get_chassis() {
 		return _chassis;
 	}
-	
 	
 	public float get_elbowPosition() throws InterruptedException, ConnectionLostException {
 		return _elbowPosition.read();
@@ -46,6 +56,10 @@ public class MovmentSystem {
 	
 	public float get_wristPosition() throws InterruptedException, ConnectionLostException {
 		return _wristPosition.read();
+	}
+	
+	public float get_distance() throws InterruptedException, ConnectionLostException {
+		return _distance.read();
 	}
 	
 	
