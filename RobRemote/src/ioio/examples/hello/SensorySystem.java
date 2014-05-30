@@ -12,18 +12,12 @@ import android.view.Display;
  * whether they are android integrated sensors or are IOIO connected sensors
  */
 public class SensorySystem {
-	private SensorManager _mSensorManager;
 	private Sensor _mSensor;
-	private Display _d;
+
 	
 	
-	public SensorySystem(Display d) {
-		_d=d;
-	}
-	
-	
-	public int getAzimut() {
-		return _d.getRotation();
-	}
+//	public static int getAzimut() {
+////		return SensorManager.getOrientation();
+//	}
 	
 }

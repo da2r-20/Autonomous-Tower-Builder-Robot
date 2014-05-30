@@ -67,6 +67,9 @@ public class MovmentSystem {
 		_elbowPosition.close();
 		_sholderPosition.close();
 		_sholderPosition.close();
+		_distance.close();
+		_chassis.close();
+		_arm.close();
 		
 	}
 	

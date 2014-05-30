@@ -52,8 +52,9 @@ public class ChassisFrame {
 		_back.stop();
 	}
 	
-
-	
-	
+	public void close(){
+		_back.close();
+		_front.close();
+	}
 	
 }

@@ -2,13 +2,12 @@ package ioio.examples.hello;
 
 
 import ioio.examples.hello.R;
-import ioio.lib.api.AnalogInput;
-import ioio.lib.api.DigitalOutput;
-import ioio.lib.api.PwmOutput;
+
 import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;
 import ioio.lib.util.IOIOLooper;
 import ioio.lib.util.android.IOIOActivity;
+import android.hardware.SensorManager;
 
 import android.os.Bundle;
 import android.widget.Button;
@@ -97,12 +96,17 @@ public class MainActivity extends IOIOActivity {
 	private Button armWristDown;
 	private Button armGrasp;
 	private Button armRelease;
+	
+	private ChassisFrame _chasiss;
+	private RoboticArmEdge _arm;
+	private MovmentSystem _movmentModule;
+	private SensorManager mSensorManager;
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
 		systemEnabled = (ToggleButton) findViewById(R.id.panicButton);
 		systemEnabled.setChecked(true);
 		
@@ -128,11 +132,6 @@ public class MainActivity extends IOIOActivity {
 
 	// holds all the components connected to the IOIO and responsible for their update
 	class Looper extends BaseIOIOLooper {
-		private ChassisFrame _chasiss;
-		private RoboticArmEdge _arm;
-		private MovmentSystem _movmentModule;
-		
-
 
 		protected void setup() throws ConnectionLostException {
 			BigMotorDriver chassiFront = new BigMotorDriver(ioio_, FRONT_CHASSIS_M1_PIN, FRONT_CHASSIS_E1_PIN, FRONT_CHASSIS_M2_PIN, FRONT_CHASSIS_E2_PIN);
@@ -148,10 +147,6 @@ public class MainActivity extends IOIOActivity {
 		
 		public void loop() throws ConnectionLostException {
 			try{
-				System.out.println("distance " + _movmentModule.get_distance());
-//				System.out.println("elbow " + elbow_pot.read());
-//				System.out.println("wrist " + wrist_pot.read());
-				
 			} catch (Exception e){
 				e.printStackTrace();
 			}
@@ -160,20 +155,9 @@ public class MainActivity extends IOIOActivity {
 			if (!systemEnabled.isChecked()) {
 				_chasiss.stop();
 				_arm.stop();
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 				return;
 			}
 
-			if (armWristUp.isPressed()){
-				_arm.wristUp();
-			} else if (armWristDown.isPressed()){
-				_arm.wristDown();
-			}
-			
 			_arm.turnTurning(armTurnLeft.isPressed(), armTurnRight.isPressed());
 			_arm.toggleLed(ledOnOff.isChecked());
 			_arm.turnSholder(armSholderUp.isPressed(), armSholderDown.isPressed());
@@ -201,10 +185,6 @@ public class MainActivity extends IOIOActivity {
 			//Chassis speed
 			float newSpeed = ((buttonState & 15)!=0? 1:0) * ((float) chassiSpeedSeekBar_.getProgress()/100);
 			_chasiss.setSpeed(newSpeed);			
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-			}
 		}
 	}
 

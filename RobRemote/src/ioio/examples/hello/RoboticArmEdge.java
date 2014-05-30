@@ -103,11 +103,17 @@ public class RoboticArmEdge {
 		_turn_and_led.turnMotorB(false, false);
 	}
 
-
-
 	public void stop() throws ConnectionLostException{
 		_turn_and_led.stop();
 		_wrist_and_grasp.stop();
 		_sholder_and_elbow.stop();
+	}
+	
+	public void close(){
+		_sholder_and_elbow.close();
+		_turn_and_led.close();
+		_wrist_and_grasp.close();
+		_pwm.close();
+		_stby.close();
 	}
 }
