@@ -10,6 +10,7 @@ import ioio.lib.util.android.IOIOActivity;
 import android.hardware.SensorManager;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.ToggleButton;
@@ -77,23 +78,9 @@ public class MainActivity extends IOIOActivity {
 	private static final int PRESSED_RIGHT = 8;
 
 	//GUI fields
-	private Button chassiUpButton_;
-	private Button chassiDownButton_;
-	private Button chassiLeftButton_;
-	private Button chassiRightButton_;
-	private SeekBar chassiSpeedSeekBar_;
-	private ToggleButton systemEnabled;
-	private Button armTurnRight;
-	private Button armTurnLeft;
-	private ToggleButton ledOnOff;
-	private Button armSholderUp;
-	private Button armSholderDown;
-	private Button armElbowDown;
-	private Button armElbowUp;
-	private Button armWristUp;
-	private Button armWristDown;
-	private Button armGrasp;
-	private Button armRelease;
+
+	private ToggleButton _startStop;
+
 	
 	private ChassisFrame _chasiss;
 	private RoboticArmEdge _arm;
@@ -105,32 +92,12 @@ public class MainActivity extends IOIOActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		systemEnabled = (ToggleButton) findViewById(R.id.panicButton);
-		systemEnabled.setChecked(true);
+		_startStop = (ToggleButton) findViewById(R.id.toggleButton1);
 		
-		chassiUpButton_ = (Button) findViewById(R.id.up);
-		chassiDownButton_ = (Button) findViewById(R.id.down);
-		chassiLeftButton_ = (Button) findViewById(R.id.Left);
-		chassiRightButton_ = (Button) findViewById(R.id.Right);
-		chassiSpeedSeekBar_ = (SeekBar) findViewById(R.id.speedSeekBar);
-		chassiSpeedSeekBar_.setProgress(0);
-		
-		armTurnRight = (Button) findViewById(R.id.TurnRight);
-		armTurnLeft = (Button) findViewById(R.id.TurnLeft);
-		ledOnOff = (ToggleButton) findViewById(R.id.LedOnOff);
-		armSholderUp = (Button) findViewById(R.id.SholderUp);
-		armSholderDown = (Button) findViewById(R.id.SholderDown);
-		armElbowUp = (Button) findViewById(R.id.Elbow_up);
-		armElbowDown = (Button) findViewById(R.id.Elbow_Down);
-		armWristUp = (Button) findViewById(R.id.Wrist_Up);
-		armWristDown = (Button) findViewById(R.id.Wrist_Down);
-		armGrasp = (Button) findViewById(R.id.arm_Grasp);
-		armRelease = (Button) findViewById(R.id.arm_Release);
 	}
 
 	// holds all the components connected to the IOIO and responsible for their update
 	class Looper extends BaseIOIOLooper {
-
 		protected void setup() throws ConnectionLostException {
 			BigMotorDriver chassiFront = new BigMotorDriver(ioio_, FRONT_CHASSIS_M1_PIN, FRONT_CHASSIS_E1_PIN, FRONT_CHASSIS_M2_PIN, FRONT_CHASSIS_E2_PIN);
 			BigMotorDriver chassiBack = new BigMotorDriver(ioio_, BACK_CHASSIS_M1_PIN, BACK_CHASSIS_E1_PIN, BACK_CHASSIS_M2_PIN, BACK_CHASSIS_E2_PIN);
@@ -141,51 +108,22 @@ public class MainActivity extends IOIOActivity {
 			SmallMotorDriver wrist_and_grasp = new SmallMotorDriver(ioio_, WRIST_A01_PIN, WRIST_A02_PIN, GRASP_B01_PIN, GRASP_B02_PIN);
 			_arm = new RoboticArmEdge(ioio_, wrist_and_grasp, sholder_and_elbow, turn_and_led, ARM_STBY, ARM_PWM);
 			_movmentModule = new MovmentSystem(ioio_, _chasiss, _arm, WRIST_POT_PIN, SHOLDER_POT_PIN, ELBOW_POT_PIN, DISTANCE_PIN);
-			
-			
 		}
 		
 		public void loop() throws ConnectionLostException {
-			try{
-			} catch (Exception e){
-				e.printStackTrace();
-			}
-			
-			//ensures that loop runs only if systemEnabled button is pressed
-			if (!systemEnabled.isChecked()) {
-				_chasiss.stop();
-				_arm.stop();
-				return;
-			}
-
-			_arm.turnTurning(armTurnLeft.isPressed(), armTurnRight.isPressed());
-			_arm.toggleLed(ledOnOff.isChecked());
-			_arm.turnSholder(armSholderUp.isPressed(), armSholderDown.isPressed());
-			_arm.turnElbow(armElbowUp.isPressed(), armElbowDown.isPressed());
-			_arm.turnWrist(armWristUp.isPressed(), armWristDown.isPressed());
-			_arm.turnGrasp(armRelease.isPressed(), armGrasp.isPressed());
-
-			
-			//Chassis part
-			int buttonState =  (chassiUpButton_.isPressed()? 0x1:0x0) + (chassiDownButton_.isPressed()? 0x2:0x0) + (chassiLeftButton_.isPressed()? 0x4:0x0) + (chassiRightButton_.isPressed()? 0x8:0x0);
-			if (buttonState == PRESSED_UP){
-				_chasiss.driveForward();
-			}
-			else if((buttonState == PRESSED_DOWN)){
-				_chasiss.driveBackwards();
-			}
-			else if(buttonState == PRESSED_LEFT){
-				_chasiss.turnLeft();
-			}
-			else if(buttonState == PRESSED_RIGHT){
-				_chasiss.turnRight();
-			}
-			else{}
-			
-			//Chassis speed
-			float newSpeed = ((buttonState & 15)!=0? 1:0) * ((float) chassiSpeedSeekBar_.getProgress()/100);
-			_chasiss.setSpeed(newSpeed);			
+		
 		}
+		
+		
+		public void onToggleClicked(View view) throws ConnectionLostException{
+			boolean on = ((ToggleButton) view).isChecked();
+			if (on){
+				System.out.println("i'm turned On");
+			} else{
+				System.out.println("i'm turned Off");
+			}
+		}
+		
 	}
 
 	@Override
