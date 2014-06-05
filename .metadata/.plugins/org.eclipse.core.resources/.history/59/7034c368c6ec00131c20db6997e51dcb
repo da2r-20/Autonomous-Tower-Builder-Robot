@@ -1,7 +1,0 @@
-package ioio.examples.hello;
-
-public interface Stoppable {
-
-	
-		public void stop();
-}
