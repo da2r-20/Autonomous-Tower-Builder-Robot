@@ -1,0 +1,6 @@
+package ioio.examples.hello;
+
+public class RobotSettings {
+	
+	public static final movmentSpeed = 
+}

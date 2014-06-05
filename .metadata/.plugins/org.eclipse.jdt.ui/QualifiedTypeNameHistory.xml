@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="ioio.lib.api.AnalogInput"/>
+<fullyQualifiedTypeName name="ioio.examples.hello.ChassisFrame"/>
+<fullyQualifiedTypeName name="ioio.examples.hello.RoboticArmEdge"/>
+<fullyQualifiedTypeName name="ioio.examples.hello.MovmentSystem"/>
+<fullyQualifiedTypeName name="ioio.examples.hello.SensorySystem"/>
+<fullyQualifiedTypeName name="ioio.examples.hello.R"/>
+<fullyQualifiedTypeName name="android.R"/>
+<fullyQualifiedTypeName name="android.hardware.SensorManager"/>
+</qualifiedTypeNameHistroy>

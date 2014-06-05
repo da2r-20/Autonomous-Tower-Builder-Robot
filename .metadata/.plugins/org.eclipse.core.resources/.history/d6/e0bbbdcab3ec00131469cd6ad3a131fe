@@ -1,0 +1,7 @@
+package ioio.examples.hello;
+
+public class RobotSettings {
+	
+	public static final double movmentSpeed = 42.73; // cm/sec rover speed with arm on top
+	
+}
