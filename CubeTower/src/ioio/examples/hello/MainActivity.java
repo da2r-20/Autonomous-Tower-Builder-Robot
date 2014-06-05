@@ -88,12 +88,24 @@ public class MainActivity extends IOIOActivity {
 	private SensorManager mSensorManager;
 	
 
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		_startStop = (ToggleButton) findViewById(R.id.toggleButton1);
 		
+	}
+	
+	
+	public void onToggleClicked(View view) throws ConnectionLostException{
+		boolean on = ((ToggleButton) view).isChecked();
+		if (on){
+			_movmentModule.setRoverSpeed(100);
+			_movmentModule.moveForward(40);
+		} else{
+			_movmentModule.stop();
+		}
 	}
 
 	// holds all the components connected to the IOIO and responsible for their update
@@ -111,19 +123,16 @@ public class MainActivity extends IOIOActivity {
 		}
 		
 		public void loop() throws ConnectionLostException {
+			
+		}
 		
+		public void startAlgo() throws ConnectionLostException {
+			
 		}
 		
 		
-		public void onToggleClicked(View view) throws ConnectionLostException{
-			boolean on = ((ToggleButton) view).isChecked();
-			if (on){
-				System.out.println("i'm turned On");
-			} else{
-				System.out.println("i'm turned Off");
-			}
-		}
 		
+
 	}
 
 	@Override

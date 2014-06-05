@@ -5,7 +5,7 @@ import ioio.lib.api.IOIO;
 import ioio.lib.api.PwmOutput;
 import ioio.lib.api.exception.ConnectionLostException;
 
-public class RoboticArmEdge {
+public class RoboticArmEdge implements Stoppable{
 	private SmallMotorDriver _wrist_and_grasp;
 	private SmallMotorDriver _sholder_and_elbow;
 	private SmallMotorDriver _turn_and_led;

@@ -6,7 +6,7 @@ import ioio.lib.api.PwmOutput;
 
 import ioio.lib.api.exception.ConnectionLostException;
 
-public class SmallMotorDriver implements MotorController{
+public class SmallMotorDriver implements MotorController, Stoppable{
 	public DigitalOutput A01, A02, B01, B02;
 	
 	public SmallMotorDriver(IOIO ioio, int A01, int A02, int B01, int B02) throws ConnectionLostException{

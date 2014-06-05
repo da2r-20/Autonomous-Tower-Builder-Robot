@@ -12,7 +12,7 @@
         android:layout_centerVertical="true"
         android:text="ToggleButton1"
         android:textOff="Start"
-        android:textOn="Stop" />
-    	android:onClick="onToggleClicked"
+        android:textOn="Stop" 
+    	android:onClick = "onToggleClicked"/>
 
 </RelativeLayout>

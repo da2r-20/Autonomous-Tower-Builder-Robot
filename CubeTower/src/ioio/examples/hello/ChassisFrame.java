@@ -6,7 +6,7 @@ import ioio.lib.api.exception.ConnectionLostException;
  */
 
 
-public class ChassisFrame {
+public class ChassisFrame  implements Stoppable{
 	BigMotorDriver _front;
 	BigMotorDriver _back;
     //sides

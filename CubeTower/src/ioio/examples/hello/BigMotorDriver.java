@@ -5,7 +5,7 @@ import ioio.lib.api.IOIO;
 import ioio.lib.api.PwmOutput;
 import ioio.lib.api.exception.ConnectionLostException;
 
-public class BigMotorDriver implements MotorController {
+public class BigMotorDriver implements MotorController, Stoppable{
 	DigitalOutput m1,m2;
 	PwmOutput e1,e2;
 	

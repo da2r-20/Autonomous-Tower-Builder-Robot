@@ -7,7 +7,7 @@ import ioio.lib.api.AnalogInput;
 import ioio.lib.api.IOIO;
 import ioio.lib.api.exception.ConnectionLostException;
 
-public class MovmentSystem {
+public class MovmentSystem implements Stoppable{
 	private static final float SHOLDER_LIM_UP = (float) 0.79;
 	private static final float SHOLDER_LIM_DOWN = (float) 0.63;
 	private static final float ELBOW_LIM_UP = (float) 0.11;
@@ -78,21 +78,42 @@ public class MovmentSystem {
 	
 	
 	public void moveForward(double centimeters) throws ConnectionLostException{
-		long driveTime = (long) (RobotSettings.movmentSpeed * centimeters);
+		long driveTime = (long) (RobotSettings.movmentSpeed / centimeters * 1000);
 		_chassis.driveForward();
-		
-		_stopTimer.schedule(new TimerTask() {
-			
-			public void run() {
-				try {
-					_chassis.stop();
-				} catch (ConnectionLostException e) {
-					e.printStackTrace();
-				}
-			}
-		}, driveTime);
-		
+		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
 	}
 	
+	public void moveBackwards(double centimeters) throws ConnectionLostException{
+		long driveTime = (long) (RobotSettings.movmentSpeed / centimeters * 1000);
+		_chassis.driveBackwards();
+		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
+	}
+
+	public void stop() throws ConnectionLostException {
+		_arm.stop();
+		_chassis.stop();
+	}
+
+	public void setRoverSpeed(float speed) throws ConnectionLostException {
+		_chassis.setSpeed(speed);
+	}
+	
+
+	public class StopMovment extends TimerTask{
+		private Stoppable _obj;
+		public StopMovment(Stoppable obj) {
+			_obj = obj;
+		}
+		@Override
+		public void run() {
+			try {
+				System.out.println("stoping...");
+				_obj.stop();
+			} catch (ConnectionLostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}// run()
+	}// StopMovment
 	
 }
