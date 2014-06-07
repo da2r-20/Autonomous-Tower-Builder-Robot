@@ -3,6 +3,8 @@ package ioio.examples.hello;
 public class RobotSettings {
 	
 	public static final double movmentSpeed = 42.73; // cm/sec rover speed with arm on top
+	public static final double sholderMov = 0.02;
+	public static final double elbowMov = 0.002;
 	
 	//movment limitations
 	public static final float SHOLDER_LIM_UP = (float) 0.79;

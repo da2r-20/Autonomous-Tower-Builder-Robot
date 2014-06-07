@@ -98,11 +98,11 @@ public class MainActivity extends IOIOActivity {
 	}
 	
 	
-	public void onToggleClicked(View view) throws ConnectionLostException{
+	public void onToggleClicked(View view) throws ConnectionLostException, InterruptedException{
 		boolean on = ((ToggleButton) view).isChecked();
 		if (on){
 			_movmentModule.setRoverSpeed(100);
-			_movmentModule.moveForward(40);
+			_movmentModule.moveArm(15);
 		} else{
 			_movmentModule.stop();
 		}

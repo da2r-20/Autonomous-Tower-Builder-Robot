@@ -11,6 +11,7 @@ public class RoboticArmEdge implements Stoppable{
 	private SmallMotorDriver _turn_and_led;
 	private DigitalOutput _stby;
 	private PwmOutput _pwm;
+
 	
 	public RoboticArmEdge(IOIO ioio,SmallMotorDriver wrist_and_grasp, SmallMotorDriver sholder_and_elbow, SmallMotorDriver turn_and_led, int stby, int pwm) {
 		this._sholder_and_elbow = sholder_and_elbow;
