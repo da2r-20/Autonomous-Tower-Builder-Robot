@@ -2,7 +2,6 @@ package ioio.examples.hello;
 
 import ioio.lib.api.DigitalOutput;
 import ioio.lib.api.IOIO;
-import ioio.lib.api.PwmOutput;
 
 import ioio.lib.api.exception.ConnectionLostException;
 
@@ -15,7 +14,7 @@ import ioio.lib.api.exception.ConnectionLostException;
  */
 
 public class SmallMotorDriver implements  Stoppable{
-	public DigitalOutput A01, A02, B01, B02;
+	private DigitalOutput A01, A02, B01, B02;
 	
 	/**
 	 * this constructor takes the assigned pins numbers and opens the the IOIO pins for writing
@@ -84,16 +83,31 @@ public class SmallMotorDriver implements  Stoppable{
 		B02.write(b);
 	}
 	
+	/**
+	 * turn motor a in direction
+	 * @param l the signal to write to the A01 pin
+	 * @param r the signal to write to the A02 pin
+	 * @throws ConnectionLostException
+	 */
 	public void turnMotorA(boolean l,boolean r) throws ConnectionLostException{
 		this.A01.write(l);
 		this.A02.write(r);
 	}
 	
+	/**
+	 * turn motor a in direction
+	 * @param l the signal to write to the B01 pin
+	 * @param r the signal to write to the B02 pin
+	 * @throws ConnectionLostException
+	 */
 	public void turnMotorB(boolean l,boolean r) throws ConnectionLostException{
 		this.B01.write(l);
 		this.B02.write(r);
 	}
 	
+	/**
+	 * closes all digital outputs
+	 */
 	public void close(){
 		this.A01.close();
 		this.A02.close();

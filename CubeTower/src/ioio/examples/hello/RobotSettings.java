@@ -1,5 +1,11 @@
 package ioio.examples.hello;
 
+/**
+ * this class contains all of the robot relevant constants
+ * pin numbers, arm movement limitations,  
+ * @author гешеп
+ *
+ */
 public class RobotSettings {
 	
 	public static final double movmentSpeed = 42.73; // cm/sec rover speed with arm on top
@@ -23,7 +29,6 @@ public class RobotSettings {
 	//arm pins
 	public static final int ARM_STBY = 31;
 	public static final int ARM_PWM = 28;
-	
 
 	//turn and led
 	public static final int TURN_A02_PIN = 19;
@@ -54,7 +59,4 @@ public class RobotSettings {
 	public static final int BACK_CHASSIS_M2_PIN = 44;
 	public static final int BACK_CHASSIS_E1_PIN = 45;
 	public static final int BACK_CHASSIS_E2_PIN = 46;
-	
-	
-	
 }

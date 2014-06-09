@@ -7,6 +7,10 @@ import ioio.lib.api.AnalogInput;
 import ioio.lib.api.IOIO;
 import ioio.lib.api.exception.ConnectionLostException;
 
+/**
+ * this class handles all functionality of the robot's movement
+ * @author гешеп
+ */
 public class MovmentSystem implements Stoppable{
 	private static final float SHOLDER_LIM_UP = (float) 0.79;
 	private static final float SHOLDER_LIM_DOWN = (float) 0.63;
@@ -66,6 +70,9 @@ public class MovmentSystem implements Stoppable{
 	}
 	
 	
+	/**
+	 * closes all relevant digital pins
+	 */
 	public void close() {
 		_elbowPosition.close();
 		_sholderPosition.close();
@@ -144,6 +151,7 @@ public class MovmentSystem implements Stoppable{
 		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
 	}
 
+	@Override
 	public void stop() throws ConnectionLostException {
 		_arm.stop();
 		_chassis.stop();
