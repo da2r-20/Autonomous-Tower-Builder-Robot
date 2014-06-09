@@ -6,9 +6,26 @@ import ioio.lib.api.PwmOutput;
 
 import ioio.lib.api.exception.ConnectionLostException;
 
-public class SmallMotorDriver implements MotorController, Stoppable{
+/**
+ * this class handles API for the TB6612FNG Motor controller
+ * controlling the robot's robotic arm
+ * notice that every motor driver should also receive a standby and two pwm signals 
+ * this is made through the RoboticArmEdge class
+ * @author Doron
+ */
+
+public class SmallMotorDriver implements  Stoppable{
 	public DigitalOutput A01, A02, B01, B02;
 	
+	/**
+	 * this constructor takes the assigned pins numbers and opens the the IOIO pins for writing
+	 * @param ioio the IOIO occurrence received from the IOIO activity
+	 * @param A01 pin number
+	 * @param A02 pin number
+	 * @param B01 pin number
+	 * @param B02 pin number
+	 * @throws ConnectionLostException
+	 */
 	public SmallMotorDriver(IOIO ioio, int A01, int A02, int B01, int B02) throws ConnectionLostException{
 		this.A01 = ioio.openDigitalOutput(A01, false);
 		this.A02 = ioio.openDigitalOutput(A02, false);
@@ -16,6 +33,14 @@ public class SmallMotorDriver implements MotorController, Stoppable{
 		this.B02 = ioio.openDigitalOutput(B02,false);
 	}
 	
+	/**
+	 * this constructor takes an already opened pin instances and assign them to the fields
+	 * @param A01 digital output
+	 * @param A02 digital output
+	 * @param B01 digital output
+	 * @param B02 digital output
+	 * @throws ConnectionLostException
+	 */
 	public SmallMotorDriver(DigitalOutput A01, DigitalOutput A02, DigitalOutput B01, DigitalOutput B02) throws ConnectionLostException{
 		this.A01 = A01;
 		this.A02 = A02;
@@ -23,28 +48,40 @@ public class SmallMotorDriver implements MotorController, Stoppable{
 		this.B02 = B02;
 	}
 	
+	/**
+	 * writes to pin A01
+	 * @param b the value to be written
+	 * @throws ConnectionLostException
+	 */
 	public void writeToA01(boolean b) throws ConnectionLostException {
 		A01.write(b);
 	}
 	
+	/**
+	 * writes to pin A02
+	 * @param b the value to be written
+	 * @throws ConnectionLostException
+	 */
 	public void writeToA02(boolean b) throws ConnectionLostException {
 		A02.write(b);
 	}
 	
+	/**
+	 * writes to pin B01
+	 * @param b the value to be written
+	 * @throws ConnectionLostException
+	 */
 	public void writeToB01(boolean b) throws ConnectionLostException {
 		B01.write(b);
 	}
 	
+	/**
+	 * writes to pin B02
+	 * @param b the value to be written
+	 * @throws ConnectionLostException
+	 */
 	public void writeToB02(boolean b) throws ConnectionLostException {
 		B02.write(b);
-	}
-	
-	public void turnMotorA(boolean direction) throws ConnectionLostException{
-		this.A01.write(direction);
-		this.A02.write(!direction);
-	}
-
-	public void turnMotorB(boolean direction) throws ConnectionLostException{
 	}
 	
 	public void turnMotorA(boolean l,boolean r) throws ConnectionLostException{
@@ -65,30 +102,10 @@ public class SmallMotorDriver implements MotorController, Stoppable{
 	}
 	
 	@Override
-	public String toString() {
-		return "A01 - " + A01 +
-			   "\nA02 - " + A02 +
-			   "\nB01 - " + B01 +
-			   "\nB02 - " + B02 ;
-	}
-
-	@Override
 	public void stop() throws ConnectionLostException {
 		this.A01.write(false);
 		this.A02.write(false);
 		this.B01.write(false);
 		this.B02.write(false);
-	}
-
-	@Override
-	public void setMotorA_speed(float speed) throws ConnectionLostException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setMotorB_speed(float speed) throws ConnectionLostException {
-		// TODO Auto-generated method stub
-		
 	}
 }
