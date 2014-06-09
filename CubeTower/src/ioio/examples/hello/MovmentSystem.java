@@ -30,7 +30,7 @@ public class MovmentSystem implements Stoppable{
 		
 	
 
-
+	
 	public MovmentSystem(IOIO ioio, ChassisFrame chassis, RoboticArmEdge arm, int wristPositionPin, int sholderPositionPin, int elbowPositionPin, int distancePin) {
 		_chassis = chassis;
 		_arm = arm;
