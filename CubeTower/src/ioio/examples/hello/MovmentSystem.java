@@ -45,26 +45,58 @@ public class MovmentSystem implements Stoppable{
 		}
 	}
 	
+	/**
+	 * simple getter
+	 * @return
+	 */
 	public RoboticArmEdge get_arm() {
 		return _arm;
 	}
 	
+	/**
+	 * simple getter
+	 * @return
+	 */
 	public ChassisFrame get_chassis() {
 		return _chassis;
 	}
 	
+	/**
+	 * gets the elbow position by the potentiometer on the arm
+	 * @return the elbow position
+	 * @throws InterruptedException
+	 * @throws ConnectionLostException
+	 */
 	public float get_elbowPosition() throws InterruptedException, ConnectionLostException {
 		return _elbowPosition.read();
 	}
 	
+	/**
+	 * gets the shoulder position by the potentiometer on the arm
+	 * @return the shoulder position
+	 * @throws InterruptedException
+	 * @throws ConnectionLostException
+	 */
 	public float get_sholderPosition() throws InterruptedException, ConnectionLostException {
 		return _sholderPosition.read();
 	}
 	
+	/**
+	 * gets the wrist position by the potentiometer on the arm
+	 * @return the wrist position
+	 * @throws InterruptedException
+	 * @throws ConnectionLostException
+	 */
 	public float get_wristPosition() throws InterruptedException, ConnectionLostException {
 		return _wristPosition.read();
 	}
 	
+	/**
+	 * gets the distance given by the distance sensor on the front of the robot
+	 * @return returns the distance from the object in front of the rover
+	 * @throws InterruptedException
+	 * @throws ConnectionLostException
+	 */
 	public float get_distance() throws InterruptedException, ConnectionLostException {
 		return _distance.read();
 	}
@@ -83,6 +115,13 @@ public class MovmentSystem implements Stoppable{
 		
 	}
 	
+	
+	/**
+	 * move the shoulder in a certain degree
+	 * @param degree the degree to move the arm, the sign of degree will determine the direction
+	 * @throws ConnectionLostException
+	 * @throws InterruptedException
+	 */
 	public void moveSholder(double degree) throws ConnectionLostException, InterruptedException{
 		
 		double PositionToGet=degree*(RobotSettings.sholderMov);
@@ -92,6 +131,12 @@ public class MovmentSystem implements Stoppable{
 		  _arm.stop();
 	}
 	
+	/**
+	 * move the elbow in a certain degree
+	 * @param degree the degree to move the arm, the sign of degree will determine the direction
+	 * @throws ConnectionLostException
+	 * @throws InterruptedException
+	 */
 	public void moveElbow(double degree) throws ConnectionLostException, InterruptedException{
 		double PositionToGet=degree*(RobotSettings.elbowMov);
 		  while(get_elbowPosition()<PositionToGet){
@@ -139,12 +184,22 @@ public class MovmentSystem implements Stoppable{
 
 	}
 	
+	/**
+	 * moves the robot forwards x centimeters
+	 * @param centimeters centimeters to move
+	 * @throws ConnectionLostException
+	 */
 	public void moveForward(double centimeters) throws ConnectionLostException{
 		long driveTime = (long) (RobotSettings.movmentSpeed / centimeters * 1000);
 		_chassis.driveForward();
 		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
 	}
 	
+	/**
+	 * moves the robot backwards x centimeters
+	 * @param centimeters centimeters to move
+	 * @throws ConnectionLostException
+	 */
 	public void moveBackwards(double centimeters) throws ConnectionLostException{
 		long driveTime = (long) (RobotSettings.movmentSpeed / centimeters * 1000);
 		_chassis.driveBackwards();
@@ -157,16 +212,28 @@ public class MovmentSystem implements Stoppable{
 		_chassis.stop();
 	}
 
+	/**
+	 * sets the drive speed of the rover
+	 * @param speed the new speed value
+	 * @throws ConnectionLostException
+	 */
 	public void setRoverSpeed(float speed) throws ConnectionLostException {
 		_chassis.setSpeed(speed);
 	}
 	
-
+	
+	/**
+	 * this classes implements the TimerTask abstract class
+	 * the goal of this class is to stop a certain stoppable object 
+	 * @author гешеп
+	 *
+	 */
 	public class StopMovment extends TimerTask{
 		private Stoppable _obj;
 		public StopMovment(Stoppable obj) {
 			_obj = obj;
 		}
+		
 		@Override
 		public void run() {
 			try {
