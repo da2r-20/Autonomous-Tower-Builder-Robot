@@ -144,7 +144,7 @@ public class MovmentSystem implements Stoppable{
 		return;
 		}
 		double beta0=Math.acos((Math.pow(b0, 2) - Math.pow(d1, 2)- Math.pow(b3, 2))/(-2*d1*b3));
-		//System.out.println(beta0);
+		System.out.println(beta0);
 		double gamma3=Math.asin(d3/(b3*Math.sin(Math.PI-a3)));
 		double a2=Math.PI-beta0-gamma3;
 		double beta3=Math.asin(b3/(b0*Math.sin(beta0)));
@@ -154,10 +154,9 @@ public class MovmentSystem implements Stoppable{
 		double a1_degrees=a1*(180/Math.PI);
 		double a2_degrees=a2*(180/Math.PI);
 
-		this.moveSholder(90-a1_degrees);
-		this.moveElbow(90-a2_degrees);
-		System.out.println("sholder need to move:" + (90-a1_degrees));
-		System.out.println("elbow need to move:" + (90-a2_degrees));
+		this.moveSholder(180-a1_degrees);
+		this.moveElbow(180-a2_degrees);
+		
 
 	}
 	
