@@ -7,6 +7,10 @@ import ioio.lib.api.AnalogInput;
 import ioio.lib.api.IOIO;
 import ioio.lib.api.exception.ConnectionLostException;
 
+/**
+ * this class handles all functionality of the robot's movement
+ * @author гешеп
+ */
 public class MovmentSystem implements Stoppable{
 	private static final float SHOLDER_LIM_UP = (float) 0.79;
 	private static final float SHOLDER_LIM_DOWN = (float) 0.63;
@@ -26,7 +30,7 @@ public class MovmentSystem implements Stoppable{
 		
 	
 
-
+	
 	public MovmentSystem(IOIO ioio, ChassisFrame chassis, RoboticArmEdge arm, int wristPositionPin, int sholderPositionPin, int elbowPositionPin, int distancePin) {
 		_chassis = chassis;
 		_arm = arm;
@@ -41,31 +45,66 @@ public class MovmentSystem implements Stoppable{
 		}
 	}
 	
+	/**
+	 * simple getter
+	 * @return
+	 */
 	public RoboticArmEdge get_arm() {
 		return _arm;
 	}
 	
+	/**
+	 * simple getter
+	 * @return
+	 */
 	public ChassisFrame get_chassis() {
 		return _chassis;
 	}
 	
+	/**
+	 * gets the elbow position by the potentiometer on the arm
+	 * @return the elbow position
+	 * @throws InterruptedException
+	 * @throws ConnectionLostException
+	 */
 	public float get_elbowPosition() throws InterruptedException, ConnectionLostException {
 		return _elbowPosition.read();
 	}
 	
+	/**
+	 * gets the shoulder position by the potentiometer on the arm
+	 * @return the shoulder position
+	 * @throws InterruptedException
+	 * @throws ConnectionLostException
+	 */
 	public float get_sholderPosition() throws InterruptedException, ConnectionLostException {
 		return _sholderPosition.read();
 	}
 	
+	/**
+	 * gets the wrist position by the potentiometer on the arm
+	 * @return the wrist position
+	 * @throws InterruptedException
+	 * @throws ConnectionLostException
+	 */
 	public float get_wristPosition() throws InterruptedException, ConnectionLostException {
 		return _wristPosition.read();
 	}
 	
+	/**
+	 * gets the distance given by the distance sensor on the front of the robot
+	 * @return returns the distance from the object in front of the rover
+	 * @throws InterruptedException
+	 * @throws ConnectionLostException
+	 */
 	public float get_distance() throws InterruptedException, ConnectionLostException {
 		return _distance.read();
 	}
 	
 	
+	/**
+	 * closes all relevant digital pins
+	 */
 	public void close() {
 		_elbowPosition.close();
 		_sholderPosition.close();
@@ -76,6 +115,13 @@ public class MovmentSystem implements Stoppable{
 		
 	}
 	
+	
+	/**
+	 * move the shoulder in a certain degree
+	 * @param degree the degree to move the arm, the sign of degree will determine the direction
+	 * @throws ConnectionLostException
+	 * @throws InterruptedException
+	 */
 	public void moveSholder(double degree) throws ConnectionLostException, InterruptedException{
 		if(degree>90){
 			degree=90;
@@ -97,6 +143,12 @@ public class MovmentSystem implements Stoppable{
 		  _arm.stop();
 	}
 	
+	/**
+	 * move the elbow in a certain degree
+	 * @param degree the degree to move the arm, the sign of degree will determine the direction
+	 * @throws ConnectionLostException
+	 * @throws InterruptedException
+	 */
 	public void moveElbow(double degree) throws ConnectionLostException, InterruptedException{
 		if(degree>90){
 			degree=90;
@@ -161,39 +213,65 @@ public class MovmentSystem implements Stoppable{
 
 	}
 	
+<<<<<<< HEAD
 	public void turnAround(double dgree) throws ConnectionLostException{
 		long driveTime = (long) (RobotSettings.turnaroundTime * dgree);
 		_chassis.turnRight();
 		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
 	}
 	
+=======
+	/**
+	 * moves the robot forwards x centimeters
+	 * @param centimeters centimeters to move
+	 * @throws ConnectionLostException
+	 */
+>>>>>>> fd26661c5a570027b1f498dab5efbd8683c477a7
 	public void moveForward(double centimeters) throws ConnectionLostException{
 		long driveTime = (long) (RobotSettings.movmentSpeed / centimeters * 1000);
 		_chassis.driveForward();
 		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
 	}
 	
+	/**
+	 * moves the robot backwards x centimeters
+	 * @param centimeters centimeters to move
+	 * @throws ConnectionLostException
+	 */
 	public void moveBackwards(double centimeters) throws ConnectionLostException{
 		long driveTime = (long) (RobotSettings.movmentSpeed / centimeters * 1000);
 		_chassis.driveBackwards();
 		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
 	}
 
+	@Override
 	public void stop() throws ConnectionLostException {
 		_arm.stop();
 		_chassis.stop();
 	}
 
+	/**
+	 * sets the drive speed of the rover
+	 * @param speed the new speed value
+	 * @throws ConnectionLostException
+	 */
 	public void setRoverSpeed(float speed) throws ConnectionLostException {
 		_chassis.setSpeed(speed);
 	}
 	
-
+	
+	/**
+	 * this classes implements the TimerTask abstract class
+	 * the goal of this class is to stop a certain stoppable object 
+	 * @author гешеп
+	 *
+	 */
 	public class StopMovment extends TimerTask{
 		private Stoppable _obj;
 		public StopMovment(Stoppable obj) {
 			_obj = obj;
 		}
+		
 		@Override
 		public void run() {
 			try {
