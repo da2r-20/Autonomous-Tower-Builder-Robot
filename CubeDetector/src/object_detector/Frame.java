@@ -64,8 +64,16 @@ public class Frame {
 		//Convert frame to HSV image
 		Imgproc.cvtColor(this.frame, this.hsvMat, Imgproc.COLOR_BGR2HSV);
 		
+		//Equalize histogram
+		List<Mat> hsvPlanes = new ArrayList<Mat>();
+		Core.split(this.hsvMat, hsvPlanes);
+		Imgproc.equalizeHist(hsvPlanes.get(2), hsvPlanes.get(2));
+		Core.merge(hsvPlanes, hsvMat);
+		
 		//Filter by HSV range
 		Core.inRange(this.hsvMat, this.hsvMinRange , this.hsvMaxRange, this.hsvThreshed);
+		
+		//Apply morphological filters for noise removal
 		morphOps(hsvThreshed);
 		
 		//Convert to BGR for bitwise and
@@ -123,14 +131,14 @@ public class Frame {
 		Mat erodeElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(3,3));
 		Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(8,8));
 		
-		//Imgproc.erode(target, target, erodeElement);
+		Imgproc.erode(target, target, erodeElement);
 		//Imgproc.erode(target, target, erodeElement);
 		//Imgproc.erode(target, target, erodeElement);
 		//Imgproc.erode(target, target, erodeElement);
 		//Imgproc.erode(target, target, erodeElement);
 		//Imgproc.erode(target, target, erodeElement);
 		
-		//Imgproc.dilate(target, target, dilateElement);
+		Imgproc.dilate(target, target, dilateElement);
 		//Imgproc.dilate(target, target, dilateElement);
 		//Imgproc.dilate(target, target, dilateElement);
 		//Imgproc.dilate(target, target, dilateElement);
