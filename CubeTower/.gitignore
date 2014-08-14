@@ -10,6 +10,7 @@
 
 # Generated files
 bin/
+bin/*
 gen/
 
 # Gradle files
@@ -42,4 +43,6 @@ local.properties
 .settings/
 .loadpath
 /src/main/resources/rebel.xml
+
 *.class
+*.properties

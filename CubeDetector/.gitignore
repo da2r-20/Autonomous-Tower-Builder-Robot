@@ -44,3 +44,5 @@ local.properties
 /src/main/resources/rebel.xml
 
 */bin/*
+*.class
+*.properties
