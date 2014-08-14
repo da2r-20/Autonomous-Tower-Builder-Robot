@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">blob_detect_test</string>
+    <string name="Controls">Controls1</string>
+    <string name="TextView2">bla</string>
+    
+    <!--<string name="S">S</string>-->
+    <string name="TextView">blabla</string>
+    <string name="RobotDirection">Not moving</string>
+
+</resources>
