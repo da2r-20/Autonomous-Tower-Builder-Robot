@@ -184,15 +184,15 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		boolean on = ((ToggleButton) view).isChecked();
 		
 		if (on){
-			//Log.i("", "Algorithm started");
-			//this.execution = (ExecutionTask) new ExecutionTask(this).execute();
-			//execution.execute();
-			_movmentModule.setRoverSpeed(100);
-			_movmentModule.moveArm(15);
+			Log.i("", "Algorithm started");
+			this.execution = (ExecutionTask) new ExecutionTask(this).execute();
+			execution.execute();
+			//_movmentModule.setRoverSpeed(100);
+			//_movmentModule.moveArm(15);
 		} else{
-			//Log.i("", "Algorithm stopped");
-			//execution.cancel(true);
-			_movmentModule.stop();
+			Log.i("", "Algorithm stopped");
+			execution.cancel(true);
+			//_movmentModule.stop();
 		}
 	}
 

@@ -20,13 +20,17 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		double horizLoc;
 		double distance;
 		int colorIndex;
-		while(!isCancelled()){
+		while(true){
+			/*
+			if (isCancelled()){
+				break;
+			}*/
 			horizLoc = CubeInfo.getInstance().getHorizontalLocation();
 			distance = CubeInfo.getInstance().getDistance();
 			colorIndex = CubeInfo.getInstance().getColorIndex();
 			if (horizLoc < -30){
 				//TODO turn right
-				Log.i("","TURN RIGHT");
+				//Log.i("","TURN RIGHT");
 				if (currentAction != 2){
 					currentAction = 2;
 					publishProgress(2);	
@@ -41,13 +45,13 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				}
 			} else if (distance > 10){
 				//TODO go
-				Log.i("","Go!");
+				//Log.i("","Go!");
 				if (currentAction != 1){
 					currentAction = 1;
 					publishProgress(1);	
 				}
 			} else if (distance < 10){
-				Log.i("","STOP");
+				//Log.i("","STOP");
 				
 				if (currentAction != 0){
 					currentAction = 0;
@@ -57,7 +61,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				}
 			}
 		}
-		return null;
+		//return null;
 	}
 
 	protected void onProgressUpdate(Integer... progress) {
