@@ -46,3 +46,5 @@ local.properties
 */bin/*
 *.class
 *.properties
+
+IOIO/IOIO-bridge/*
