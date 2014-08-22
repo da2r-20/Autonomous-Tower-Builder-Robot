@@ -1,5 +1,15 @@
 package com.example.blob_detect_test;
 
+import ioio.examples.hello.BigMotorDriver;
+import ioio.examples.hello.ChassisFrame;
+import ioio.examples.hello.MovmentSystem;
+import ioio.examples.hello.RoboticArmEdge;
+import ioio.examples.hello.SmallMotorDriver;
+import ioio.lib.api.exception.ConnectionLostException;
+import ioio.lib.util.BaseIOIOLooper;
+import ioio.lib.util.IOIOLooper;
+import ioio.lib.util.android.IOIOActivity;
+
 import java.util.ArrayList;
 
 import object_detector.ImgController;
@@ -11,43 +21,21 @@ import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
-
-import com.example.blob_detect_test.Adapter.SeekBarListener;
 
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
-import android.app.Activity;
+import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
-import ioio.examples.hello.BigMotorDriver;
-import ioio.examples.hello.ChassisFrame;
-import ioio.examples.hello.MovmentSystem;
-import ioio.examples.hello.RoboticArmEdge;
-import ioio.examples.hello.SmallMotorDriver;
-import ioio.lib.api.exception.ConnectionLostException;
-import ioio.lib.util.BaseIOIOLooper;
-import ioio.lib.util.IOIOLooper;
-import ioio.lib.util.android.IOIOActivity;
-import android.hardware.SensorManager;
-
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.SeekBar;
 import android.widget.ToggleButton;
 
-public class MainActivity extends IOIOActivity   implements OnNavigationListener, CvCameraViewListener2 {
+import com.example.blob_detect_test.Adapter.SeekBarListener;
+
+public class MainActivity extends IOIOActivity   implements OnNavigationListener, CvCameraViewListener2, AsyncResponse{
 	//movment limitations
 	private static final float SHOLDER_LIM_UP = (float) 0.79;
 	private static final float SHOLDER_LIM_DOWN = (float) 0.63;
@@ -110,6 +98,9 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	private RoboticArmEdge _arm;
 	private MovmentSystem _movmentModule;
 	private SensorManager mSensorManager;
+	
+	//main execution AsyncTask
+	private ExecutionTask execution;
 
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
@@ -140,8 +131,17 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.camera_main_view);
 		//mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 		mOpenCvCameraView.setCvCameraViewListener(this);
-
-
+		
+		//init cube info
+		CubeInfo.getInstance();
+		CubeInfo.getInstance().setColorIndex(0);
+		
+		//init execution task
+		//this.execution = new ExecutionTask(this);
+		
+		//init reference to buttom TextView
+		robotDirections = (TextView)findViewById(R.id.RobotDirection);
+		
 		//setContentView(R.layout.activity_main);
 		ActionBar bar = getActionBar();
 		ArrayList<String> list = new ArrayList<String>();
@@ -182,11 +182,17 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 
 	public void onToggleClicked(View view) throws ConnectionLostException, InterruptedException{
 		boolean on = ((ToggleButton) view).isChecked();
+		
 		if (on){
-			_movmentModule.setRoverSpeed(100);
-			_movmentModule.moveArm(15);
+			Log.i("", "Algorithm started");
+			this.execution = (ExecutionTask) new ExecutionTask(this).execute();
+			execution.execute();
+			//_movmentModule.setRoverSpeed(100);
+			//_movmentModule.moveArm(15);
 		} else{
-			_movmentModule.stop();
+			Log.i("", "Algorithm stopped");
+			execution.cancel(true);
+			//_movmentModule.stop();
 		}
 	}
 
@@ -205,7 +211,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		Log.i("test", "test"); 
 		//imgController.detectObjects(frame);
 		frame = imgController.getProcessedFrame(frame);
-		robotDirections = (TextView)findViewById(R.id.RobotDirection);
+		//robotDirections = (TextView)findViewById(R.id.RobotDirection);
 		/*
 	Handler refresh = new Handler(Looper.getMainLooper());
 	refresh.post(new Runnable() {
@@ -216,13 +222,20 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	});
 		 */
 
-
+/*
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				robotDirections.setText(imgController.getDirections());
+				//robotDirections.setText(imgController.getDirections());
+				if (CubeInfo.getInstance().getColorIndex()==0){
+					//robotDirections.setText("Green");
+				} else {
+					//robotDirections.setText("Blue");
+				}
+				
+				//robotDirections.setText(String.valueOf(CubeInfo.getInstance().getHorizontalLocation()));
 			}
-		});
+		});*/
 
 
 		return frame;
@@ -279,5 +292,13 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	@Override
 	protected IOIOLooper createIOIOLooper() {
 		return new Looper();
+	}
+
+
+	@Override
+	public void processFinish(String output) {
+		// TODO Auto-generated method stub
+		this.robotDirections.setText(output);
+		
 	}
 }

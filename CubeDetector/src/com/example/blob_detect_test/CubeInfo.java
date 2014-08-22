@@ -1,6 +1,5 @@
-package com.example.blob_detect_test;
 
-import java.util.ArrayList;
+package com.example.blob_detect_test;
 
 public class CubeInfo {
 	
@@ -45,7 +44,5 @@ public class CubeInfo {
 			instance = new CubeInfo();
 		} 
 		return instance;
-	}
-	
-	
+	}	
 }
