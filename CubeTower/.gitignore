@@ -43,3 +43,4 @@ local.properties
 .loadpath
 /src/main/resources/rebel.xml
 *.class
+*.properties

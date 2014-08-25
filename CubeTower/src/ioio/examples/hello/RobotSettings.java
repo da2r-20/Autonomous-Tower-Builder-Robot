@@ -3,7 +3,7 @@ package ioio.examples.hello;
 /**
  * this class contains all of the robot relevant constants
  * pin numbers, arm movement limitations,  
- * @author гешеп
+ * @author двш егешеп
  *
  */
 public class RobotSettings {
@@ -12,6 +12,8 @@ public class RobotSettings {
 	public static final double sholderMov = 0.00341237;
 	public static final double elbowMov = 0.0093869;
 	public static final double turnaroundTime= 0;
+	public static final int cubeSize=3;
+	public static final double clewTime=0;
 	
 	//movment limitations
 	public static final float SHOLDER_LIM_UP = (float) 0.79;

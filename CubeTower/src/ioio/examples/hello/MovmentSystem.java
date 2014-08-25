@@ -176,7 +176,7 @@ public class MovmentSystem implements Stoppable{
 	public void moveArm(double distance) throws ConnectionLostException, InterruptedException{
 		double [] cube= new double [2];
 		cube[0]=0;
-		cube[1]=3;
+		cube[1]=RobotSettings.cubeSize;
 		double [] D1_base={distance,18};
 		double d1=9;
 		double d2=11;
@@ -207,11 +207,52 @@ public class MovmentSystem implements Stoppable{
 		double a2_degrees=a2*(180/Math.PI);
 
 		this.moveSholder(90-a1_degrees);
-		this.moveElbow(90-a2_degrees);
-		System.out.println("sholder need to move:" + (90-a1_degrees));
-		System.out.println("elbow need to move:" + (90-a2_degrees));
+		this.moveElbow(180-a2_degrees);
+		//System.out.println("sholder need to move:" + (90-a1_degrees));
+		//System.out.println("elbow need to move:" + (90-a2_degrees));
 
 	}
+	
+	public void moveArmToPutCube(double distance, int amountOfCube) throws ConnectionLostException, InterruptedException{
+		double [] cube= new double [2];
+		cube[0]=0;
+		cube[1]=RobotSettings.cubeSize*amountOfCube;
+		double [] D1_base={distance,18};
+		double d1=9;
+		double d2=11;
+		double d3=4.5;
+		double a3=(43.43)*(Math.PI/180);
+		double [] D0=D1_base;
+		double [] D3=cube;
+		double b3=Math.sqrt(Math.pow(d2, 2)+Math.pow(d3, 2)-2*d2*d3*Math.cos(Math.PI-a3));
+
+		double [] xx= new double [2];
+		xx[0]=D0[0]-D3[0];
+		xx[1]=D0[1]-D3[1];
+		double b0 =Math.sqrt(Math.pow(xx[0], 2)+Math.pow(xx[1], 2));
+		if(b0>d1+b3){
+		this.moveForward(b0-(d1+b3)+3);
+		this.moveArm(distance-(b0-(d1+b3)+3));
+		return;
+		}
+		double beta0=Math.acos((Math.pow(b0, 2) - Math.pow(d1, 2)- Math.pow(b3, 2))/(-2*d1*b3));
+		//System.out.println(beta0);
+		double gamma3=Math.asin(d3/(b3*Math.sin(Math.PI-a3)));
+		double a2=Math.PI-beta0-gamma3;
+		double beta3=Math.asin(b3/(b0*Math.sin(beta0)));
+		double betax=Math.atan(xx[0]/xx[1]);
+		double a1=Math.PI-betax-beta3;
+
+		double a1_degrees=a1*(180/Math.PI);
+		double a2_degrees=a2*(180/Math.PI);
+
+		this.moveSholder(90-a1_degrees);
+		this.moveElbow(180-a2_degrees);
+		//System.out.println("sholder need to move:" + (90-a1_degrees));
+		//System.out.println("elbow need to move:" + (90-a2_degrees));
+
+	}
+	
 	
 
 	public void turnAround(double dgree) throws ConnectionLostException{
@@ -227,6 +268,18 @@ public class MovmentSystem implements Stoppable{
 	 */
 	public void moveForward(double centimeters) throws ConnectionLostException{
 		long driveTime = (long) (RobotSettings.movmentSpeed / centimeters * 1000);
+		_chassis.driveForward();
+		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
+	}
+	
+	public void getCube() throws ConnectionLostException{
+		long driveTime =(long) RobotSettings.clewTime;
+		_chassis.driveForward();
+		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
+	}
+	
+	public void putCube() throws ConnectionLostException{
+		long driveTime =(long) RobotSettings.clewTime;
 		_chassis.driveForward();
 		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
 	}
