@@ -12,6 +12,8 @@ import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
+import android.util.Log;
+
 public class Frame {
 	private double focalLength;
 	private double width;
@@ -27,13 +29,17 @@ public class Frame {
 	private double[] hsvMinRangeArr = {0,0,0};
 	private double[] hsvMaxRangeArr = {255,255,255};
 	
-	
 	public Frame(double focalLength, double objectWidth){
 		this.focalLength = focalLength;
 		this.objectWidth = objectWidth;
 		this.hsvMat = new Mat();
 		this.hsvThreshed = new Mat();
 		this.filteredBlock = new Mat();
+	}
+	
+	public void setColor(Scalar hsvMin, Scalar hsvMax){
+		this.hsvMinRange = hsvMin;
+		this.hsvMaxRange = hsvMax;
 	}
 	
 	private void arrToScalars(double[] minArr, double[] maxArr){
@@ -102,13 +108,18 @@ public class Frame {
 		MatOfPoint maxContour = null;
 		for (MatOfPoint contour : contours){
 			contourArea = Imgproc.contourArea(contour);
-			if (contourArea > maxArea){
+			if (contourArea > maxArea && contourArea > 500){
 				maxArea = contourArea;
+				Log.i("contour area", String.valueOf(maxArea));
 				maxContour = contour;
 			}
 		}
 		
-		return new Block(maxContour, this.objectWidth);	
+		if (maxContour != null){
+			return new Block(maxContour, this.objectWidth);	
+		}
+		else return null;
+		
 	}
 	
 	

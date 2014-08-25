@@ -44,3 +44,7 @@ tmp/**/*
 /src/main/resources/rebel.xml
 
 */bin/*
+*.class
+*.properties
+
+IOIO/IOIO-bridge/*
