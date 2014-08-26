@@ -1,10 +1,6 @@
 package ioio.examples.hello;
 
-import android.content.Context;
 import android.hardware.Sensor;
-import android.hardware.SensorManager;
-import android.hardware.display.DisplayManager;
-import android.view.Display;
 
 
 /*
