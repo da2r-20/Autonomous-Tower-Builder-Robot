@@ -26,6 +26,7 @@ public class MovmentSystem implements Stoppable{
 	private AnalogInput _sholderPosition;
 	private AnalogInput _elbowPosition;
 	private AnalogInput _distance;
+	private MovmentSystem _instance = null; 
 	private Timer _stopTimer = new Timer("Stop Timer");
 		
 	
@@ -44,6 +45,7 @@ public class MovmentSystem implements Stoppable{
 			e.printStackTrace();
 		}
 	}
+	
 	
 	/**
 	 * simple getter
@@ -161,22 +163,27 @@ public class MovmentSystem implements Stoppable{
 			  
 		  }
 		}
-		else{
+		else {
 			if(elbowPosition>PositionToGet){
 				  while(get_elbowPosition()>PositionToGet){
 					  _arm.elbowUp();
-					  
 				  }
-				}
-			
+			}
 		}
 		  _arm.stop();
 	}
 	
+
+	/**
+	 * this function lowers the arm to grab the cube infront of the rover 
+	 * @param distance rover distance from the cube
+	 * @throws ConnectionLostException
+	 * @throws InterruptedException
+	 */
 	public void moveArm(double distance) throws ConnectionLostException, InterruptedException{
 		double [] cube= new double [2];
 		cube[0]=0;
-		cube[1]=3;
+		cube[1] = RobotSettings.cubeSize;
 		double [] D1_base={distance,18};
 		double d1=9;
 		double d2=11;
@@ -207,13 +214,63 @@ public class MovmentSystem implements Stoppable{
 		double a2_degrees=a2*(180/Math.PI);
 
 		this.moveSholder(90-a1_degrees);
-		this.moveElbow(90-a2_degrees);
-		System.out.println("sholder need to move:" + (90-a1_degrees));
-		System.out.println("elbow need to move:" + (90-a2_degrees));
+		this.moveElbow(180-a2_degrees);
+		//System.out.println("sholder need to move:" + (90-a1_degrees));
+		//System.out.println("elbow need to move:" + (90-a2_degrees));
+	}
+
+	/**
+	 * this function moves the arm to the position on the tower
+	 * @param distance from the cube layed in-front of the rover
+	 * @param amountOfCube the number of cube in the tower
+	 * @throws ConnectionLostException
+	 * @throws InterruptedException
+	 */
+	public void moveArmToPutCube(double distance, int amountOfCube) throws ConnectionLostException, InterruptedException{
+		double[] cube = new double [2];
+		cube[0] = 0;
+		cube[1] = RobotSettings.cubeSize * amountOfCube;
+		double[] D1_base = {distance, 18};
+		double d1 = 9;
+		double d2 = 11;
+		double d3 = 4.5;
+		double a3 = (43.43) * (Math.PI / 180);
+		double[] D0 = D1_base;
+		double[] D3 = cube;
+		double b3 = Math.sqrt(Math.pow(d2, 2) + Math.pow(d3, 2) - 2 * d2 * d3 * Math.cos(Math.PI - a3));
+
+		double[] xx = new double [2];
+		xx[0] = D0[0]-D3[0];
+		xx[1] = D0[1]-D3[1];
+		double b0 = Math.sqrt(Math.pow(xx[0], 2)+Math.pow(xx[1], 2));
+		if(b0 > d1 + b3){
+		this.moveForward(b0 - (d1 + b3) + 3);
+		this.moveArm(distance - (b0 - (d1 + b3) + 3));
+		return;
+		}
+		double beta0 = Math.acos((Math.pow(b0, 2) - Math.pow(d1, 2) - Math.pow(b3, 2)) / (-2*d1*b3));
+		//System.out.println(beta0);
+		double gamma3 = Math.asin(d3 / (b3 * Math.sin(Math.PI - a3)));
+		double a2 = Math.PI - beta0 - gamma3;
+		double beta3 = Math.asin(b3 / ( b0*Math.sin(beta0)));
+		double betax = Math.atan(xx[0] / xx[1]);
+		double a1 =  Math.PI - betax - beta3;
+
+		double a1_degrees = a1 * (180 / Math.PI);
+		double a2_degrees = a2 * (180 / Math.PI);
+
+		this.moveSholder(90-a1_degrees);
+		this.moveElbow(180-a2_degrees);
+		//System.out.println("sholder need to move:" + (90-a1_degrees));
+		//System.out.println("elbow need to move:" + (90-a2_degrees));
 
 	}
-	
 
+	/**
+	 * turn around in place
+	 * @param dgree a degree to be turned
+	 * @throws ConnectionLostException
+	 */
 	public void turnAround(double dgree) throws ConnectionLostException{
 		long driveTime = (long) (RobotSettings.turnaroundTime * dgree);
 		_chassis.turnRight();
@@ -231,6 +288,28 @@ public class MovmentSystem implements Stoppable{
 		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
 	}
 	
+	/**
+	 * command the hand to grab a cube
+	 * @throws ConnectionLostException
+	 */
+	public void grabCube() throws ConnectionLostException{
+		long driveTime =(long) (RobotSettings.clawTime * 1000);
+		_arm.closeHand();
+		
+		_stopTimer.schedule(new StopMovment(_arm), driveTime);
+	}
+
+	/**
+	 * open the arm to release a cube
+	 * @throws ConnectionLostException
+	 */
+	public void releaseCube() throws ConnectionLostException{
+		long driveTime =(long) (RobotSettings.clawTime * 1000);
+		_arm.openHand();
+		
+		_stopTimer.schedule(new StopMovment(_arm), driveTime);
+	}
+
 	/**
 	 * moves the robot backwards x centimeters
 	 * @param centimeters centimeters to move
@@ -266,6 +345,9 @@ public class MovmentSystem implements Stoppable{
 	 */
 	public class StopMovment extends TimerTask{
 		private Stoppable _obj;
+		/**
+		 * @param obj an object to be stopped
+		 */
 		public StopMovment(Stoppable obj) {
 			_obj = obj;
 		}
@@ -282,4 +364,23 @@ public class MovmentSystem implements Stoppable{
 		}// run()
 	}// StopMovment
 	
+	
+	/**
+	 * this function brings up the arm to a certain position after grabbing a cube
+	 * @throws ConnectionLostException
+	 * @throws InterruptedException
+	 */
+	public void bringArmUp() throws ConnectionLostException, InterruptedException {
+		this.moveSholder(90);
+		this.moveElbow(70);
+	}
+	
+	
+	public void takeCube(){
+		
+	}
+	
+	public void placeCube(){
+		
+	}
 }

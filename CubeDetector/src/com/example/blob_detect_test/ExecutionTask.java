@@ -1,25 +1,42 @@
 package com.example.blob_detect_test;
 
+import ioio.examples.hello.MovmentSystem;
+import ioio.lib.api.IOIO;
+import ioio.lib.api.exception.ConnectionLostException;
+
 import java.net.URL;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
+public class ExecutionTask extends AsyncTask<URL, Integer, Long>{
 	
 	public AsyncResponse delegate = null;
 	private int currentAction = 100;
+	private MovmentSystem _movmentSystem;
 	
 	
-	ExecutionTask(AsyncResponse delegate){
+	ExecutionTask(AsyncResponse delegate, MovmentSystem movmentSystem){
 		this.delegate = delegate;
+		_movmentSystem = movmentSystem;
 	}
 
+	/**
+	 * algo code goes here
+	 */
 	@Override
 	protected Long doInBackground(URL... params) {
 		double horizLoc;
 		double distance;
 		int colorIndex;
+
+//		try {
+//			_movmentSystem.releaseCube();
+//		} catch (ConnectionLostException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
 		while(true){
 			/*
 			if (isCancelled()){
@@ -38,7 +55,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 					
 			} else if (horizLoc > 30){
 				//TODO turn left
-				Log.i("","TURN LEFT");
+//				Log.i("","TURN LEFT");
 				if (currentAction != -2){
 					currentAction = -2;
 					publishProgress(-2);	
@@ -61,9 +78,10 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				}
 			}
 		}
-		//return null;
+//		return null;
 	}
 
+	
 	protected void onProgressUpdate(Integer... progress) {
 		switch (progress[0]){
 			case (2): 
@@ -81,9 +99,9 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			default:
 				break;					
 		}
+		
 		//delegate.processFinish("test");
 		//(TextView)findViewById(R.id.RobotDirection)
 		//setProgressPercent(progress[0]);
 	}
-
 }

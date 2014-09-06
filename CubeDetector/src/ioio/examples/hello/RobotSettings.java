@@ -11,8 +11,10 @@ public class RobotSettings {
 	public static final double movmentSpeed = 42.73; // cm/sec rover speed with arm on top
 	public static final double sholderMov = 0.00341237;
 	public static final double elbowMov = 0.0093869;
-	public static final double turnaroundTime= 0;
-	
+	public static final double turnaroundTime = 0;
+	public static final int cubeSize = 3;
+	public static final double clawTime = 1.1;
+
 	//movment limitations
 	public static final float SHOLDER_LIM_UP = (float) 0.79;
 	public static final float SHOLDER_LIM_DOWN = (float) 0.63;

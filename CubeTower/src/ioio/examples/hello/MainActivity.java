@@ -120,6 +120,7 @@ public class MainActivity extends IOIOActivity {
 			SmallMotorDriver wrist_and_grasp = new SmallMotorDriver(ioio_, WRIST_A01_PIN, WRIST_A02_PIN, GRASP_B01_PIN, GRASP_B02_PIN);
 			_arm = new RoboticArmEdge(ioio_, wrist_and_grasp, sholder_and_elbow, turn_and_led, ARM_STBY, ARM_PWM);
 			_movmentModule = new MovmentSystem(ioio_, _chasiss, _arm, WRIST_POT_PIN, SHOLDER_POT_PIN, ELBOW_POT_PIN, DISTANCE_PIN);
+			System.out.println();
 		}
 		
 		public void loop() throws ConnectionLostException {

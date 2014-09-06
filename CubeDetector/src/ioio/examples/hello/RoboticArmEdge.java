@@ -160,7 +160,7 @@ public class RoboticArmEdge implements Stoppable{
 	 * closes the arm's hand
 	 * @throws ConnectionLostException
 	 */
-	public void closeHand() throws ConnectionLostException{
+	public void openHand() throws ConnectionLostException{
 		this.turnGrasp(false, true);
 	}
 
@@ -168,7 +168,7 @@ public class RoboticArmEdge implements Stoppable{
 	 * opens the arm's hand
 	 * @throws ConnectionLostException
 	 */
-	public void openHand() throws ConnectionLostException{
+	public void closeHand() throws ConnectionLostException{
 		this.turnGrasp(true, false);
 	}
 	

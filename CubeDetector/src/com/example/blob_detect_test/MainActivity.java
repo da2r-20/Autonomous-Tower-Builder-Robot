@@ -27,6 +27,7 @@ import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
@@ -35,7 +36,7 @@ import android.widget.ToggleButton;
 
 import com.example.blob_detect_test.Adapter.SeekBarListener;
 
-public class MainActivity extends IOIOActivity   implements OnNavigationListener, CvCameraViewListener2, AsyncResponse{
+public class MainActivity extends IOIOActivity   implements OnNavigationListener, CvCameraViewListener2, AsyncResponse {
 	//movment limitations
 	private static final float SHOLDER_LIM_UP = (float) 0.79;
 	private static final float SHOLDER_LIM_DOWN = (float) 0.63;
@@ -60,8 +61,8 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	private static final int TURN_A01_PIN = 20;
 	private static final int LED_B01_PIN = 21;
 	private static final int LED_B02_PIN = 22;
-	//sholder and elbow
 
+	//sholder and elbow
 	private static final int SHOLDER_A02_PIN = 26;  
 	private static final int SHOLDER_A01_PIN = 25;
 	private static final int ELBOW_B02_PIN = 23;
@@ -179,14 +180,40 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		});
 	}
 
-
+	/**
+	 * this method defines the action to be taken for pressing the toggle button
+	 * @param view 
+	 * @throws ConnectionLostException
+	 * @throws InterruptedException
+	 */
 	public void onToggleClicked(View view) throws ConnectionLostException, InterruptedException{
 		boolean on = ((ToggleButton) view).isChecked();
 		
 		if (on){
+			
 			Log.i("", "Algorithm started");
-			this.execution = (ExecutionTask) new ExecutionTask(this).execute();
-			execution.execute();
+			Handler handler = new Handler();
+			Runnable r=new Runnable()
+			{
+			    public void run() 
+			    {
+			        try {
+			        	System.out.println(_movmentModule);
+						_movmentModule.bringArmUp();
+					} catch (ConnectionLostException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			    }
+			};
+			handler.postAtFrontOfQueue(r);
+			
+			this.execution = (ExecutionTask) new ExecutionTask(this, _movmentModule).execute();
+			
+			//execution.execute();
 			//_movmentModule.setRoverSpeed(100);
 			//_movmentModule.moveArm(15);
 		} else{
@@ -212,34 +239,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		//imgController.detectObjects(frame);
 		frame = imgController.getProcessedFrame(frame);
 		//robotDirections = (TextView)findViewById(R.id.RobotDirection);
-		/*
-	Handler refresh = new Handler(Looper.getMainLooper());
-	refresh.post(new Runnable() {
-	    public void run()
-	    {
-	    	robotDirections.setText(imgController.getDirections());
-	    }
-	});
-		 */
-
-/*
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				//robotDirections.setText(imgController.getDirections());
-				if (CubeInfo.getInstance().getColorIndex()==0){
-					//robotDirections.setText("Green");
-				} else {
-					//robotDirections.setText("Blue");
-				}
-				
-				//robotDirections.setText(String.valueOf(CubeInfo.getInstance().getHorizontalLocation()));
-			}
-		});*/
-
-
 		return frame;
-
 	}
 
 
@@ -283,10 +283,6 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		public void startAlgo() throws ConnectionLostException {
 			
 		}
-		
-		
-		
-
 	}
 
 	@Override
