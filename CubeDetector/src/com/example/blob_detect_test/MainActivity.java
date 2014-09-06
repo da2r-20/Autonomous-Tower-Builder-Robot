@@ -128,8 +128,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		mOpenCvCameraView.setCvCameraViewListener(this);
 		
 		//init cube info
-		CubeInfo.getInstance();
-		CubeInfo.getInstance().setColorIndex(0);
+		CubeInfo.getInstance().setColor(Color.GREEN);
 		
 		//init execution task
 		//this.execution = new ExecutionTask(this);
