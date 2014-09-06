@@ -266,6 +266,14 @@ public class MovmentSystem implements Stoppable{
 		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
 	}
 	
+	public void turnRight() throws ConnectionLostException{
+		_chassis.turnRight();
+	}
+	
+	public void turnLeft() throws ConnectionLostException{
+		_chassis.turnLeft();
+	}
+	
 	/**
 	 * moves the robot forwards x centimeters
 	 * @param centimeters centimeters to move
@@ -275,6 +283,16 @@ public class MovmentSystem implements Stoppable{
 		long driveTime = (long) (RobotSettings.movmentSpeed / centimeters * 1000);
 		_chassis.driveForward();
 		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
+	}
+	
+	
+	
+	/**
+	 * moves the robot forward (without stopping)
+	 * @throws ConnectionLostException
+	 */
+	public void moveForwardCont() throws ConnectionLostException{
+		_chassis.driveForward();	
 	}
 	
 	/**
