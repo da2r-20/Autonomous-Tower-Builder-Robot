@@ -12,6 +12,8 @@ import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
+import com.example.blob_detect_test.Color;
+
 import android.util.Log;
 
 public class Frame {
@@ -24,6 +26,7 @@ public class Frame {
 	private Mat hsvMat;
 	private Mat hsvThreshed;
 	private Mat filteredBlock;
+	private Color color;
 	private Scalar hsvMinRange = new Scalar(49,23,0);
 	private Scalar hsvMaxRange = new Scalar(97,111,109);
 	private double[] hsvMinRangeArr = {0,0,0};
@@ -37,9 +40,8 @@ public class Frame {
 		this.filteredBlock = new Mat();
 	}
 	
-	public void setColor(Scalar hsvMin, Scalar hsvMax){
-		this.hsvMinRange = hsvMin;
-		this.hsvMaxRange = hsvMax;
+	public void setColor(Color color){
+		this.color = color;
 	}
 	
 	private void arrToScalars(double[] minArr, double[] maxArr){
@@ -77,7 +79,7 @@ public class Frame {
 		Core.merge(hsvPlanes, hsvMat);
 		
 		//Filter by HSV range
-		Core.inRange(this.hsvMat, this.hsvMinRange , this.hsvMaxRange, this.hsvThreshed);
+		Core.inRange(this.hsvMat, this.color.getHsvMin() , this.color.getHsvMax(), this.hsvThreshed);
 		
 		//Apply morphological filters for noise removal
 		morphOps(hsvThreshed);

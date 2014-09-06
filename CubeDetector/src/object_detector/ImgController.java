@@ -10,6 +10,7 @@ import org.opencv.core.Scalar;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
+import com.example.blob_detect_test.Color;
 import com.example.blob_detect_test.CubeInfo;
 
 import android.util.Log;
@@ -18,22 +19,22 @@ import android.util.Log;
 public class ImgController {
 	private static Frame frame;// = new Frame(20,20/*TODO: pass focal length and object width*/);
 	private String directions = "";
-	private static Scalar hsvMinRangeGreen = new Scalar(49,23,0);
-	private static Scalar hsvMaxRangeGreen = new Scalar(97,111,109);
+	//private static Scalar hsvMinRangeGreen = new Scalar(49,23,0);
+	//private static Scalar hsvMaxRangeGreen = new Scalar(97,111,109);
 	//private ArrayList<Scalar[]> hsvRanges;
-	private Scalar[][] hsvRanges = {{new Scalar(49,47,0), new Scalar(100,217,109)},
-			{new Scalar(103,80,24), new Scalar(134,164,148)}};
+	//private Scalar[][] hsvRanges = {{new Scalar(49,47,0), new Scalar(100,217,109)},
+			//{new Scalar(103,80,24), new Scalar(134,164,148)}};
 	
 	
-	private Scalar hsvMinRange;
-	private Scalar hsvMaxRange;
-	private int colorIndex;
+	//private Scalar hsvMinRange;
+	//private Scalar hsvMaxRange;
+	//private int colorIndex;
+	private Color color;
 	
 	public ImgController(){
 		//hsvRanges.add(new Scalar[] {new Scalar(49,23,0), new Scalar(97,111,109)});
 		frame = new Frame(720,3);
-		this.colorIndex = CubeInfo.getInstance().getColorIndex();
-		frame.setColor(hsvRanges[0][0], hsvRanges[0][1]);
+		this.color = null;
 	};
 	
 	public void detectObjects(Mat src){
@@ -49,10 +50,15 @@ public class ImgController {
 	}
 	
 	public Mat getProcessedFrame(Mat src){
+		/*
 		if (this.colorIndex != CubeInfo.getInstance().getColorIndex()){
 			this.colorIndex = CubeInfo.getInstance().getColorIndex();
 			frame.setColor(hsvRanges[this.colorIndex][0], hsvRanges[this.colorIndex][1]);
+		} */
+		if (this.color != CubeInfo.getInstance().getColor()){
+			frame.setColor(CubeInfo.getInstance().getColor());
 		}
+		
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 		frame.updateFrame(src);
 		Block block = frame.getObjects();
@@ -61,6 +67,7 @@ public class ImgController {
 		}
 		Mat result = frame.getThreshed();
 		if (block != null){
+			CubeInfo.getInstance().setFound(true);
 			double blockHorizontalCenter = block.getCenter().x;
 			if(block!= null){
 				Imgproc.drawContours(result, contours, 0, new Scalar(0, 255,0),5);
@@ -96,6 +103,8 @@ public class ImgController {
 			}
 			
 		
+		} else {
+			CubeInfo.getInstance().setFound(false);
 		}
 		return result;
 	}
