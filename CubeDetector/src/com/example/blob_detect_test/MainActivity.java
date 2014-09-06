@@ -37,13 +37,7 @@ import android.widget.ToggleButton;
 import com.example.blob_detect_test.Adapter.SeekBarListener;
 
 public class MainActivity extends IOIOActivity   implements OnNavigationListener, CvCameraViewListener2, AsyncResponse {
-	//movment limitations
-	private static final float SHOLDER_LIM_UP = (float) 0.79;
-	private static final float SHOLDER_LIM_DOWN = (float) 0.63;
-	private static final float ELBOW_LIM_UP = (float) 0.11;
-	private static final float ELBOW_LIM_DOWN = (float) 0.10;
-	private static final float WRIST_LIM_UP = 36;
-	private static final float WRIST_LIM_DOWN = 0;
+
 
 	//potentiometer pins
 	private static final int DISTANCE_PIN = 35;
@@ -98,7 +92,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	private ChassisFrame _chasiss;
 	private RoboticArmEdge _arm;
 	private MovmentSystem _movmentModule;
-	private SensorManager mSensorManager;
+
 	
 	//main execution AsyncTask
 	private ExecutionTask execution;
@@ -246,14 +240,12 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	@Override
 	public void onCameraViewStarted(int width, int height) {
 		// TODO Auto-generated method stub
-
 	}
 
 
 	@Override
 	public void onCameraViewStopped() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -280,10 +272,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 			
 		}
 		
-		public void startAlgo() throws ConnectionLostException {
-			
-		}
-	}
+	}//BaseIOIOLooper
 
 	@Override
 	protected IOIOLooper createIOIOLooper() {

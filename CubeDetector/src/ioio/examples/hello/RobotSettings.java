@@ -51,7 +51,7 @@ public class RobotSettings {
 	public static final int GRASP_B01_PIN = 32;
 	public static final int GRASP_B02_PIN = 33;
 	
-	//front side motors on chassi
+	//front side motors on chassis
 	public static final int FRONT_CHASSIS_E1_PIN = 39;
 	public static final int FRONT_CHASSIS_E2_PIN = 40;	
 	public static final int FRONT_CHASSIS_M1_PIN = 41;
@@ -62,4 +62,8 @@ public class RobotSettings {
 	public static final int BACK_CHASSIS_M2_PIN = 44;
 	public static final int BACK_CHASSIS_E1_PIN = 45;
 	public static final int BACK_CHASSIS_E2_PIN = 46;
+	
+	//distance sensor measurements
+	
+	
 }

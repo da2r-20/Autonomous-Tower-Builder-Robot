@@ -12,24 +12,13 @@ import ioio.lib.api.exception.ConnectionLostException;
  * @author гешеп
  */
 public class MovmentSystem implements Stoppable{
-	private static final float SHOLDER_LIM_UP = (float) 0.79;
-	private static final float SHOLDER_LIM_DOWN = (float) 0.63;
-	private static final float ELBOW_LIM_UP = (float) 0.11;
-	private static final float ELBOW_LIM_DOWN = (float) 0.10;
-	private static final float WRIST_LIM_UP = 36;
-	private static final float WRIST_LIM_DOWN = 0;
-	
-
 	private ChassisFrame _chassis;
 	private RoboticArmEdge _arm;
 	private AnalogInput _wristPosition;
 	private AnalogInput _sholderPosition;
 	private AnalogInput _elbowPosition;
 	private AnalogInput _distance;
-	private MovmentSystem _instance = null; 
 	private Timer _stopTimer = new Timer("Stop Timer");
-		
-	
 
 	
 	public MovmentSystem(IOIO ioio, ChassisFrame chassis, RoboticArmEdge arm, int wristPositionPin, int sholderPositionPin, int elbowPositionPin, int distancePin) {
@@ -375,12 +364,37 @@ public class MovmentSystem implements Stoppable{
 		this.moveElbow(70);
 	}
 	
-	
-	public void takeCube(){
-		
+	/**
+	 * picks up a cube, releases it and brings back up the arm
+	 * @throws InterruptedException 
+	 * @throws ConnectionLostException
+	 */
+	public void takeCube() throws ConnectionLostException, InterruptedException{
+		this.moveArm(this.getDistanceCentimeters());
+		this.grabCube();
+		this.bringArmUp();
 	}
 	
-	public void placeCube(){
-		
+	/**
+	 * this function places a cube in a certain level.
+	 * pre-assumeing that the cube is held by the robot
+	 * @param level the level of the cube to be put at, for example - cube 3 == level 3
+	 * @throws ConnectionLostException
+	 * @throws InterruptedException
+	 */
+	public void placeCube(int level) throws ConnectionLostException, InterruptedException{
+		this.moveArmToPutCube(get_distance(), level * RobotSettings.cubeSize);
+		this.releaseCube();
+		this.bringArmUp();
 	}
+	
+	/**
+	 * gets the distance in centimeters from the first object in-front of the rover
+	 * @return the distance from an object in-front of the rover 
+	 */
+	public int getDistanceCentimeters(){
+		//TODO - Implement this function
+		return 0;
+	}
+	
 }
