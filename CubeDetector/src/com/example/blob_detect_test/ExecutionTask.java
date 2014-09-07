@@ -16,6 +16,10 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	private int currState;
 	private MovmentSystem _movmentSystem;
 	private boolean isMoving = false;
+	private final static int MOVE = 1;
+	private final static int RIGHT = 2;
+	private final static int LEFT = 3;
+	private final static int STOP = 0;
 	
 	
 	ExecutionTask(AsyncResponse delegate, MovmentSystem movmentSystem){
@@ -25,24 +29,20 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 
 	@Override
 	protected Long doInBackground(URL... params) {
-		double horizLoc;
-		double distance;
-		int colorIndex;
-		
-
 //		try {
 //			_movmentSystem.releaseCube();
 //		} catch (ConnectionLostException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		
+		double horizLoc, distance;
 		
 		while(true){
 			if (isCancelled()){
 				break;
 			}
 			
+			/*
 			try {
 				this.searchForCube(Color.GREEN);
 			} catch (ConnectionLostException e) {
@@ -55,6 +55,8 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			*/
+			
 			
 			horizLoc = CubeInfo.getInstance().getHorizontalLocation();
 			distance = CubeInfo.getInstance().getDistance();
@@ -95,6 +97,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 					publishProgress(0);	
 				}
 			}
+			
 		}
 		return null;
 	}
@@ -105,65 +108,52 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		double horizLoc = CubeInfo.getInstance().getHorizontalLocation();
 		while (!CubeInfo.getInstance().getFound()){
 			//TODO robot turn right/left
-			if (!this.isMoving){
-				this._movmentSystem.turnRight();
-				this.isMoving = true;
-			}
+			this.robotMove(RIGHT);
 		}
-		this._movmentSystem.stop();
-		this.isMoving = false;
+		this.robotMove(STOP);
 		
-		while (horizLoc < -30){
-			if (!this.isMoving){
-				this._movmentSystem.turnRight();
-				this.isMoving = true;
-			}
-			horizLoc = CubeInfo.getInstance().getHorizontalLocation();
-		}
-		this._movmentSystem.stop();
-		this.isMoving = false;
-		
-		while (horizLoc > 30){
-			if (!this.isMoving){
-				this._movmentSystem.turnLeft();
-				this.isMoving = true;
-			}
-			horizLoc = CubeInfo.getInstance().getHorizontalLocation();
-		}
-		this._movmentSystem.stop();
-		this.isMoving = false;
-		/*
 		while (horizLoc < -30 || horizLoc > 30){
 			if (horizLoc < -30){
-				if (!this.isMoving){
-					this._movmentSystem.turnRight();
-					this.isMoving = true;
-				}
+				this.robotMove(RIGHT);
 			} else {
-				if (!this.isMoving){
-					this._movmentSystem.turnLeft();
-					this.isMoving = true;
-				}
+				this.robotMove(LEFT);
 			}
 			horizLoc = CubeInfo.getInstance().getHorizontalLocation();
 		}
-		*/
+		this.robotMove(STOP);
 	}
 	
 	protected void goToCube() throws ConnectionLostException{
 		double horizLoc = CubeInfo.getInstance().getHorizontalLocation();
 		while (CubeInfo.getInstance().getDistance() > 10){
 			if (horizLoc > -30 || horizLoc < 30){
-				if (!this.isMoving){
-					this._movmentSystem.moveForwardCont();
-					this.isMoving = true;
-				}
+				this.robotMove(MOVE);
 				horizLoc = CubeInfo.getInstance().getHorizontalLocation();
 			}
 			else {
+				this.robotMove(STOP);
+				this.searchForCube(CubeInfo.getInstance().getColor());
+			}
+		}	
+	}
+	
+	private void robotMove(int movement) throws ConnectionLostException{
+		if (!this.isMoving){
+			this.isMoving = true;
+			switch (movement){
+			case(MOVE):
+				this._movmentSystem.moveForwardCont();
+				break;
+			case(RIGHT):
+				this._movmentSystem.turnRight();
+				break;
+			case(LEFT):
+				this._movmentSystem.turnLeft();
+				break;
+			case(STOP):
 				this._movmentSystem.stop();
 				this.isMoving = false;
-				this.searchForCube(CubeInfo.getInstance().getColor());
+				break;	
 			}
 		}	
 	}
