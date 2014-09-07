@@ -12,6 +12,8 @@ import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
+import com.example.blob_detect_test.Color;
+
 import android.util.Log;
 
 public class Frame {
@@ -24,10 +26,15 @@ public class Frame {
 	private Mat hsvMat;
 	private Mat hsvThreshed;
 	private Mat filteredBlock;
-	private Scalar hsvMinRange = new Scalar(49,23,0);
-	private Scalar hsvMaxRange = new Scalar(97,111,109);
+	private Color color; //TODO probably not needed
+	private Scalar hsvMinRange ;//= new Scalar(49,23,0);
+	private Scalar hsvMaxRange ;//= new Scalar(97,111,109);
 	private double[] hsvMinRangeArr = {0,0,0};
 	private double[] hsvMaxRangeArr = {255,255,255};
+	private Block detectedCube;
+	private List<Mat> hsvPlanes = new ArrayList<Mat>();
+	private List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+	private Mat hierarchy = new Mat();
 	
 	public Frame(double focalLength, double objectWidth){
 		this.focalLength = focalLength;
@@ -37,9 +44,9 @@ public class Frame {
 		this.filteredBlock = new Mat();
 	}
 	
-	public void setColor(Scalar hsvMin, Scalar hsvMax){
-		this.hsvMinRange = hsvMin;
-		this.hsvMaxRange = hsvMax;
+	public void setColor(Color color){
+		this.hsvMinRange = color.getHsvMin();
+		this.hsvMaxRange = color.getHsvMax();
 	}
 	
 	private void arrToScalars(double[] minArr, double[] maxArr){
@@ -62,16 +69,19 @@ public class Frame {
 		this.arrToScalars(this.hsvMinRangeArr, this.hsvMaxRangeArr);
 	}
 	
+	
 	public Block getObjects(){
+		return this.detectedCube;
+	}
+	
+	public void processFrame(){
 		//TODO: change to vector of Blocks later on
-		//this.hsvMat = new Mat();
-		//this.hsvThreshed = new Mat();
-		//this.filteredBlock = new Mat();
+		
 		//Convert frame to HSV image
 		Imgproc.cvtColor(this.frame, this.hsvMat, Imgproc.COLOR_BGR2HSV);
 		
 		//Equalize histogram
-		List<Mat> hsvPlanes = new ArrayList<Mat>();
+		//List<Mat> hsvPlanes = new ArrayList<Mat>();
 		Core.split(this.hsvMat, hsvPlanes);
 		Imgproc.equalizeHist(hsvPlanes.get(2), hsvPlanes.get(2));
 		Core.merge(hsvPlanes, hsvMat);
@@ -88,20 +98,21 @@ public class Frame {
 		Core.bitwise_and(this.frame, this.hsvThreshed, this.filteredBlock);
 	
 		//Convert to grayscale to find contours;
-		//TODO: this isn't necessarily needed. We can find contours on hsvThreshed instead.
 		Imgproc.cvtColor(this.filteredBlock, this.filteredBlock, Imgproc.COLOR_BGR2GRAY);
 		
 		//Find contours
-		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-		Mat hierarchy = new Mat();
+		contours = new ArrayList<MatOfPoint>();
+		//Mat hierarchy = new Mat();
 		//TODO: this changes filteredBlock. Is it ok?
 		this.frame = this.hsvThreshed;
 		Imgproc.findContours(filteredBlock, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE, new Point(0,0));
 		
+		/*
 		//If no contours are found, return null
 		if (contours.size() == 0){
-			return null;
+			this.detectedCube = null;
 		}
+		*/
 		
 		//Find the largest contour
 		double contourArea, maxArea = -1;
@@ -116,9 +127,10 @@ public class Frame {
 		}
 		
 		if (maxContour != null){
-			return new Block(maxContour, this.objectWidth);	
+			this.detectedCube = new Block(maxContour, this.objectWidth);	
+			//return new Block(maxContour, this.objectWidth);	
 		}
-		else return null;
+		else this.detectedCube = null;
 		
 	}
 	
