@@ -391,10 +391,18 @@ public class MovmentSystem implements Stoppable{
 	/**
 	 * gets the distance in centimeters from the first object in-front of the rover
 	 * @return the distance from an object in-front of the rover 
+	 * @throws ConnectionLostException 
+	 * @throws InterruptedException 
 	 */
-	public int getDistanceCentimeters(){
-		//TODO - Implement this function
-		return 0;
+	public float getDistanceCentimeters() throws InterruptedException, ConnectionLostException{
+		float distanceRead = this.get_distance();
+		
+		
+		if (distanceRead < 0.1)
+			return -1;
+		
+		return (1 / distanceRead) * ((float) 80);
+		
+//		return (10 + 70/0.6 * (0.6 - distanceRead));
 	}
-	
 }
