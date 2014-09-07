@@ -121,7 +121,7 @@ public class Frame {
 			contourArea = Imgproc.contourArea(contour);
 			if (contourArea > maxArea && contourArea > 500){
 				maxArea = contourArea;
-				Log.i("contour area", String.valueOf(maxArea));
+				//Log.i("contour area", String.valueOf(maxArea));
 				maxContour = contour;
 			}
 		}

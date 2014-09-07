@@ -34,13 +34,14 @@ public class ImgController {
 			double blockHorizontalCenter = block.getCenter().x;
 			Core.circle(src, block.getCenter(), 20, new Scalar(0, 255,0));
 			double centerDiff = blockHorizontalCenter - frame.getWidth();
-			Log.i("", String.valueOf(centerDiff));
+			//Log.i("", String.valueOf(centerDiff));
 		}
 	}
 	
 	private Mat getMat(int matType){
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 		Block block = frame.getObjects();
+		contours.clear();
 		if (block != null){
 			contours.add(block.getCountour());
 		}

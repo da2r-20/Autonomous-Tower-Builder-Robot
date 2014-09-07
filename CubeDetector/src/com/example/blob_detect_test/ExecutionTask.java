@@ -71,7 +71,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 					
 			} else if (horizLoc > 30){
 				//TODO turn left
-				Log.i("","TURN LEFT");
+				//Log.i("","TURN LEFT");
 				if (currentAction != -2){
 					currentAction = -2;
 					publishProgress(-2);	
