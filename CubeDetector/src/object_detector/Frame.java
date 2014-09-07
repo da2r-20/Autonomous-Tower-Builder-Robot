@@ -26,11 +26,12 @@ public class Frame {
 	private Mat hsvMat;
 	private Mat hsvThreshed;
 	private Mat filteredBlock;
-	private Color color;
-	private Scalar hsvMinRange = new Scalar(49,23,0);
-	private Scalar hsvMaxRange = new Scalar(97,111,109);
+	private Color color; //TODO probably not needed
+	private Scalar hsvMinRange ;//= new Scalar(49,23,0);
+	private Scalar hsvMaxRange ;//= new Scalar(97,111,109);
 	private double[] hsvMinRangeArr = {0,0,0};
 	private double[] hsvMaxRangeArr = {255,255,255};
+	private Block detectedCube;
 	
 	public Frame(double focalLength, double objectWidth){
 		this.focalLength = focalLength;
@@ -41,7 +42,8 @@ public class Frame {
 	}
 	
 	public void setColor(Color color){
-		this.color = color;
+		this.hsvMinRange = color.getHsvMin();
+		this.hsvMaxRange = color.getHsvMax();
 	}
 	
 	private void arrToScalars(double[] minArr, double[] maxArr){
@@ -64,11 +66,14 @@ public class Frame {
 		this.arrToScalars(this.hsvMinRangeArr, this.hsvMaxRangeArr);
 	}
 	
+	
 	public Block getObjects(){
+		return this.detectedCube;
+	}
+	
+	public void processFrame(){
 		//TODO: change to vector of Blocks later on
-		//this.hsvMat = new Mat();
-		//this.hsvThreshed = new Mat();
-		//this.filteredBlock = new Mat();
+		
 		//Convert frame to HSV image
 		Imgproc.cvtColor(this.frame, this.hsvMat, Imgproc.COLOR_BGR2HSV);
 		
@@ -79,7 +84,7 @@ public class Frame {
 		Core.merge(hsvPlanes, hsvMat);
 		
 		//Filter by HSV range
-		Core.inRange(this.hsvMat, this.color.getHsvMin() , this.color.getHsvMax(), this.hsvThreshed);
+		Core.inRange(this.hsvMat, this.hsvMinRange , this.hsvMaxRange, this.hsvThreshed);
 		
 		//Apply morphological filters for noise removal
 		morphOps(hsvThreshed);
@@ -90,7 +95,6 @@ public class Frame {
 		Core.bitwise_and(this.frame, this.hsvThreshed, this.filteredBlock);
 	
 		//Convert to grayscale to find contours;
-		//TODO: this isn't necessarily needed. We can find contours on hsvThreshed instead.
 		Imgproc.cvtColor(this.filteredBlock, this.filteredBlock, Imgproc.COLOR_BGR2GRAY);
 		
 		//Find contours
@@ -100,10 +104,12 @@ public class Frame {
 		this.frame = this.hsvThreshed;
 		Imgproc.findContours(filteredBlock, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE, new Point(0,0));
 		
+		/*
 		//If no contours are found, return null
 		if (contours.size() == 0){
-			return null;
+			this.detectedCube = null;
 		}
+		*/
 		
 		//Find the largest contour
 		double contourArea, maxArea = -1;
@@ -118,9 +124,10 @@ public class Frame {
 		}
 		
 		if (maxContour != null){
-			return new Block(maxContour, this.objectWidth);	
+			this.detectedCube = new Block(maxContour, this.objectWidth);	
+			//return new Block(maxContour, this.objectWidth);	
 		}
-		else return null;
+		else this.detectedCube = null;
 		
 	}
 	

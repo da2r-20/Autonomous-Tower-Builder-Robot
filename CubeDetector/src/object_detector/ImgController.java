@@ -17,28 +17,15 @@ import android.util.Log;
 
 
 public class ImgController {
-	private static Frame frame;// = new Frame(20,20/*TODO: pass focal length and object width*/);
-	private String directions = "";
-	//private static Scalar hsvMinRangeGreen = new Scalar(49,23,0);
-	//private static Scalar hsvMaxRangeGreen = new Scalar(97,111,109);
-	//private ArrayList<Scalar[]> hsvRanges;
-	//private Scalar[][] hsvRanges = {{new Scalar(49,47,0), new Scalar(100,217,109)},
-			//{new Scalar(103,80,24), new Scalar(134,164,148)}};
-	
-	
-	//private Scalar hsvMinRange;
-	//private Scalar hsvMaxRange;
-	//private int colorIndex;
+	private static Frame frame;
 	private Color color;
 	
 	public ImgController(){
-		//hsvRanges.add(new Scalar[] {new Scalar(49,23,0), new Scalar(97,111,109)});
 		frame = new Frame(720,3);
 		this.color = null;
 	};
 	
 	public void detectObjects(Mat src){
-		//Log.i("test", null);
 		frame.updateFrame(src);
 		Block block = frame.getObjects();
 		if (block != null){
@@ -61,6 +48,7 @@ public class ImgController {
 		
 		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 		frame.updateFrame(src);
+		frame.processFrame();
 		Block block = frame.getObjects();
 		if (block != null){
 			contours.add(block.getCountour());
@@ -75,32 +63,10 @@ public class ImgController {
 			//Core.circle(result, block.getCenter(), 20, new Scalar(0, 255,0));
 			double centerDiff = blockHorizontalCenter - frame.getWidth()/2;
 			double distance = frame.getBlockDistance(block);
-			Log.i("", "Block center x coordinate: " + String.valueOf(blockHorizontalCenter));
-			Log.i("", "Frame half width: " + String.valueOf(frame.getWidth()/2));
-			Log.i("","Distance from center: " + String.valueOf(centerDiff));
-			Log.i("", "Distamce from camera: " + String.valueOf(frame.getBlockDistance(block)));
 			
 			//update cube info
 			CubeInfo.getInstance().setHorizontalLocation(centerDiff);
 			CubeInfo.getInstance().setDistance(distance);
-			
-			if (centerDiff < 30 && centerDiff > -30){
-				if (distance > 10){
-					directions = "Go!";
-				} else {
-					directions = "Stop!";
-					/*
-					if (CubeInfo.getInstance().getColorIndex()==0){
-						CubeInfo.getInstance().setColorIndex(1);
-					} else {
-						CubeInfo.getInstance().setColorIndex(0);
-					}*/
-				}
-			} else if (centerDiff > 30){
-				directions = "Turn right";
-			} else {
-				directions = "Turn left";
-			}
 			
 		
 		} else {
@@ -116,9 +82,6 @@ public class ImgController {
 	public Mat getThreshed(){
 		return frame.getThreshed();
 		
-	}
-	public String getDirections() {
-		return this.directions;
 	}
 
 }
