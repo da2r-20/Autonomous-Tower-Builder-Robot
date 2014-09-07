@@ -201,7 +201,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
 		Mat frame = inputFrame.rgba();
 		Imgproc.cvtColor(frame, frame, Imgproc.COLOR_RGBA2BGR);
-		Log.i("test", "test"); 
+		
 		//imgController.detectObjects(frame);
 		imgController.processFrame(frame);
 		if (imgType == RGB){
