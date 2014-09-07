@@ -104,7 +104,7 @@ public class Frame {
 		contours = new ArrayList<MatOfPoint>();
 		//Mat hierarchy = new Mat();
 		//TODO: this changes filteredBlock. Is it ok?
-		this.frame = this.hsvThreshed;
+		//this.frame = this.hsvThreshed;
 		Imgproc.findContours(filteredBlock, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE, new Point(0,0));
 		
 		/*
@@ -138,6 +138,11 @@ public class Frame {
 	public Mat getThreshed(){
 		return this.hsvThreshed;
 	}
+	
+	public Mat getRGB(){
+		return this.frame;
+	}
+	
 	
 	public double getWidth(){
 		return this.frame.width();

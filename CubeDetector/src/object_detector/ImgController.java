@@ -38,6 +38,47 @@ public class ImgController {
 		}
 	}
 	
+	private Mat getMat(int matType){
+		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+		Block block = frame.getObjects();
+		if (block != null){
+			contours.add(block.getCountour());
+		}
+		if (matType == 1){
+			result = frame.getThreshed();
+		} else if (matType == 2){
+			result = frame.getRGB();
+		}
+		if (block != null){
+			if(block!= null){
+				Imgproc.drawContours(result, contours, 0, new Scalar(0, 255,0),5);
+			}
+		}
+		return result;
+	}
+	
+	public void processFrame(Mat src){
+		if (this.color != CubeInfo.getInstance().getColor()){
+			frame.setColor(CubeInfo.getInstance().getColor());
+		}
+		frame.updateFrame(src);
+		frame.processFrame();
+		Block block = frame.getObjects();
+		if (block != null){
+			CubeInfo.getInstance().setFound(true);
+			double blockHorizontalCenter = block.getCenter().x;
+			double centerDiff = blockHorizontalCenter - frame.getWidth()/2;
+			double distance = frame.getBlockDistance(block);
+			//update cube info
+			CubeInfo.getInstance().setHorizontalLocation(centerDiff);
+			CubeInfo.getInstance().setDistance(distance);
+		} else {
+			CubeInfo.getInstance().setFound(false);
+		}
+		
+	}
+	
+	
 	public Mat getProcessedFrame(Mat src){
 		/*
 		if (this.colorIndex != CubeInfo.getInstance().getColorIndex()){
@@ -77,13 +118,18 @@ public class ImgController {
 		return result;
 	}
 	
+	public Mat getThreshed(){
+		return getMat(1);
+	}
+	
+	public Mat getRGB(){
+		return getMat(2);
+		
+	}
+	
 	public static void setThresh(int positionInList, int progress){
 		frame.setThresh(positionInList, progress);
 	}
 	
-	public Mat getThreshed(){
-		return frame.getThreshed();
-		
-	}
-
+	
 }

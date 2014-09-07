@@ -37,7 +37,10 @@ import android.widget.ToggleButton;
 import com.example.blob_detect_test.Adapter.SeekBarListener;
 
 public class MainActivity extends IOIOActivity   implements OnNavigationListener, CvCameraViewListener2, AsyncResponse {
-
+	
+	//which image to display
+	private static final int HSV = 1;
+	private static final int RGB = 2;
 
 	//potentiometer pins
 	private static final int DISTANCE_PIN = 35;
@@ -92,6 +95,9 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	private ChassisFrame _chasiss;
 	private RoboticArmEdge _arm;
 	private MovmentSystem _movmentModule;
+	
+	//The displayed image type
+	private int imgType = RGB;
 
 	
 	//main execution AsyncTask
@@ -179,12 +185,13 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	 * @throws ConnectionLostException
 	 * @throws InterruptedException
 	 */
-	public void onToggleClicked(View view) throws ConnectionLostException, InterruptedException{
+	public void onToggleClicked1(View view) throws ConnectionLostException, InterruptedException{
 		boolean on = ((ToggleButton) view).isChecked();
 		
 		if (on){
 			
 			Log.i("", "Algorithm started");
+			/*
 			Handler handler = new Handler();
 			Runnable r=new Runnable()
 			{
@@ -203,6 +210,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 			    }
 			};
 			handler.postAtFrontOfQueue(r);
+			*/
 			
 			this.execution = (ExecutionTask) new ExecutionTask(this, _movmentModule).execute();
 			
@@ -214,6 +222,18 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 			execution.cancel(true);
 			//_movmentModule.stop();
 		}
+	}
+	
+	public void onToggleClicked2(View view) {
+	    // Is the toggle on?
+	    boolean on = ((ToggleButton) view).isChecked();
+	    
+	    if (on) {
+	        this.imgType = HSV;
+	    } else {
+	    	this.imgType = RGB;
+	        // Disable vibrate
+	    }
 	}
 
 
@@ -230,7 +250,13 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		Imgproc.cvtColor(frame, frame, Imgproc.COLOR_RGBA2BGR);
 		Log.i("test", "test"); 
 		//imgController.detectObjects(frame);
-		frame = imgController.getProcessedFrame(frame);
+		imgController.processFrame(frame);
+		if (imgType == RGB){
+			frame = imgController.getRGB();
+			Imgproc.cvtColor(frame, frame, Imgproc.COLOR_RGBA2BGR);
+		} else if (imgType == HSV){
+			frame = imgController.getThreshed();
+		}
 		//robotDirections = (TextView)findViewById(R.id.RobotDirection);
 		return frame;
 	}
