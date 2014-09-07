@@ -32,6 +32,9 @@ public class Frame {
 	private double[] hsvMinRangeArr = {0,0,0};
 	private double[] hsvMaxRangeArr = {255,255,255};
 	private Block detectedCube;
+	private List<Mat> hsvPlanes = new ArrayList<Mat>();
+	private List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
+	private Mat hierarchy = new Mat();
 	
 	public Frame(double focalLength, double objectWidth){
 		this.focalLength = focalLength;
@@ -78,7 +81,7 @@ public class Frame {
 		Imgproc.cvtColor(this.frame, this.hsvMat, Imgproc.COLOR_BGR2HSV);
 		
 		//Equalize histogram
-		List<Mat> hsvPlanes = new ArrayList<Mat>();
+		//List<Mat> hsvPlanes = new ArrayList<Mat>();
 		Core.split(this.hsvMat, hsvPlanes);
 		Imgproc.equalizeHist(hsvPlanes.get(2), hsvPlanes.get(2));
 		Core.merge(hsvPlanes, hsvMat);
@@ -98,8 +101,8 @@ public class Frame {
 		Imgproc.cvtColor(this.filteredBlock, this.filteredBlock, Imgproc.COLOR_BGR2GRAY);
 		
 		//Find contours
-		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-		Mat hierarchy = new Mat();
+		contours = new ArrayList<MatOfPoint>();
+		//Mat hierarchy = new Mat();
 		//TODO: this changes filteredBlock. Is it ok?
 		this.frame = this.hsvThreshed;
 		Imgproc.findContours(filteredBlock, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE, new Point(0,0));

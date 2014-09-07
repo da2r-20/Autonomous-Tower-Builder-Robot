@@ -19,6 +19,8 @@ import android.util.Log;
 public class ImgController {
 	private static Frame frame;
 	private Color color;
+	private Mat result;
+	//List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 	
 	public ImgController(){
 		frame = new Frame(720,3);
@@ -53,7 +55,7 @@ public class ImgController {
 		if (block != null){
 			contours.add(block.getCountour());
 		}
-		Mat result = frame.getThreshed();
+		result = frame.getThreshed();
 		if (block != null){
 			CubeInfo.getInstance().setFound(true);
 			double blockHorizontalCenter = block.getCenter().x;
