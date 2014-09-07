@@ -94,18 +94,21 @@ public class Frame {
 		
 		//Convert to BGR for bitwise and
 		//Imgproc.cvtColor(this.frame, this.frame, Imgproc.COLOR_HSV2BGR);
-		Imgproc.cvtColor(this.hsvThreshed, hsvThreshed, Imgproc.COLOR_GRAY2BGR);
-		Core.bitwise_and(this.frame, this.hsvThreshed, this.filteredBlock);
+		//Imgproc.cvtColor(this.hsvThreshed, hsvThreshed, Imgproc.COLOR_GRAY2BGR);
+		//Core.bitwise_and(this.frame, this.hsvThreshed, this.filteredBlock);
 	
 		//Convert to grayscale to find contours;
-		Imgproc.cvtColor(this.filteredBlock, this.filteredBlock, Imgproc.COLOR_BGR2GRAY);
+		//Imgproc.cvtColor(this.filteredBlock, this.filteredBlock, Imgproc.COLOR_BGR2GRAY);
 		
 		//Find contours
 		contours = new ArrayList<MatOfPoint>();
 		//Mat hierarchy = new Mat();
 		//TODO: this changes filteredBlock. Is it ok?
 		//this.frame = this.hsvThreshed;
-		Imgproc.findContours(filteredBlock, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE, new Point(0,0));
+		this.filteredBlock = this.hsvThreshed.clone();
+		//Convert threshed image to BGR for possible later color drawing on top of it
+		Imgproc.cvtColor(this.hsvThreshed, hsvThreshed, Imgproc.COLOR_GRAY2BGR);
+		Imgproc.findContours(this.filteredBlock, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE, new Point(0,0));
 		
 		/*
 		//If no contours are found, return null

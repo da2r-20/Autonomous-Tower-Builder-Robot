@@ -120,7 +120,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		adapter.setSeekBarListener( new SeekBarListener(){
 
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser, int positionInList) {
-				Log.i("", "onProgressChanged " + progress + " position in list" + positionInList);
+				//Log.i("", "onProgressChanged " + progress + " position in list" + positionInList);
 				ImgController.setThresh(positionInList, progress);
 			}
 
