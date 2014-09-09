@@ -132,6 +132,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				this.searchForCube(CubeInfo.getInstance().getColor());
 			}
 		}	
+		this.robotMove(STOP);
 	}
 	
 	private void robotMove(int movement) throws ConnectionLostException{
