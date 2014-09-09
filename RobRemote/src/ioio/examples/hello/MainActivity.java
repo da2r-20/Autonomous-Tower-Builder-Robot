@@ -17,14 +17,6 @@ import android.widget.ToggleButton;
 //holds all the buttons that needs listening to
 public class MainActivity extends IOIOActivity {
 	
-	//movment limitations
-	private static final float SHOLDER_LIM_UP = (float) 0.79;
-	private static final float SHOLDER_LIM_DOWN = (float) 0.63;
-	private static final float ELBOW_LIM_UP = (float) 0.11;
-	private static final float ELBOW_LIM_DOWN = (float) 0.10;
-	private static final float WRIST_LIM_UP = 36;
-	private static final float WRIST_LIM_DOWN = 0;
-	
 	//potentiometer pins
 	private static final int DISTANCE_PIN = 35;
 	private static final int SHOLDER_POT_PIN = 36;
@@ -98,8 +90,7 @@ public class MainActivity extends IOIOActivity {
 	private ChassisFrame _chasiss;
 	private RoboticArmEdge _arm;
 	private MovmentSystem _movmentModule;
-	private SensorManager mSensorManager;
-	
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -183,7 +174,7 @@ public class MainActivity extends IOIOActivity {
 			else{}
 			
 			//Chassis speed
-			float newSpeed = ((buttonState & 15)!=0? 1:0) * ((float) chassiSpeedSeekBar_.getProgress()/100);
+			float newSpeed = ((buttonState & 15) != 0? 1:0) * ((float) chassiSpeedSeekBar_.getProgress()/100);
 			_chasiss.setSpeed(newSpeed);			
 		}
 	}

@@ -9,24 +9,19 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
-import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
 import com.example.blob_detect_test.Color;
-
-import android.util.Log;
 
 public class Frame {
 	private double focalLength;
 	private double width;
 	private double height;
 	private double objectWidth;
-	private Block block;
 	private Mat frame;
 	private Mat hsvMat;
 	private Mat hsvThreshed;
 	private Mat filteredBlock;
-	private Color color; //TODO probably not needed
 	private Scalar hsvMinRange ;//= new Scalar(49,23,0);
 	private Scalar hsvMaxRange ;//= new Scalar(97,111,109);
 	private double[] hsvMinRangeArr = {0,0,0};

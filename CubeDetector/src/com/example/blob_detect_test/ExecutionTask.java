@@ -2,18 +2,14 @@ package com.example.blob_detect_test;
 
 import ioio.examples.hello.MovmentSystem;
 import ioio.lib.api.exception.ConnectionLostException;
-
 import java.net.URL;
-
 import android.os.AsyncTask;
-import android.renderscript.Type.CubemapFace;
-import android.util.Log;
+
 
 public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	
 	public AsyncResponse delegate = null;
 	private int currentAction = 100;
-	private int currState;
 	private MovmentSystem _movmentSystem;
 	private boolean isMoving = false;
 	private final static int MOVE = 1;
@@ -29,12 +25,13 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 
 	@Override
 	protected Long doInBackground(URL... params) {
-//		try {
-//			_movmentSystem.releaseCube();
-//		} catch (ConnectionLostException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		try {
+			_movmentSystem.setRoverSpeed(100);
+			_movmentSystem.turnAround(90);
+		} catch (ConnectionLostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		double horizLoc, distance;
 		
 		while(true){
@@ -178,6 +175,10 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		//delegate.processFinish("test");
 		//(TextView)findViewById(R.id.RobotDirection)
 		//setProgressPercent(progress[0]);
+	}
+	
+	public void set_movmentSystem(MovmentSystem _movmentSystem) {
+		this._movmentSystem = _movmentSystem;
 	}
 
 }

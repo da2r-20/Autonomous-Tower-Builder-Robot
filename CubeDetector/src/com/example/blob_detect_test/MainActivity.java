@@ -10,11 +10,8 @@ import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;
 import ioio.lib.util.IOIOLooper;
 import ioio.lib.util.android.IOIOActivity;
-
 import java.util.ArrayList;
-
 import object_detector.ImgController;
-
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
@@ -23,17 +20,14 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
-
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
 import com.example.blob_detect_test.Adapter.SeekBarListener;
 
 public class MainActivity extends IOIOActivity   implements OnNavigationListener, CvCameraViewListener2, AsyncResponse {
@@ -60,7 +54,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 
 	
 	//main execution AsyncTask
-	private ExecutionTask execution;
+	private ExecutionTask _execution;
 
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
@@ -92,6 +86,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		//mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 		mOpenCvCameraView.setCvCameraViewListener(this);
 		
+		this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule);
 		//init cube info
 		CubeInfo.getInstance().setColor(Color.GREEN);
 		
@@ -164,15 +159,15 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 			};
 			handler.postAtFrontOfQueue(r);
 			*/
-			
-			this.execution = (ExecutionTask) new ExecutionTask(this, _movmentModule).execute();
+				
+			_execution.execute();
 			
 			//execution.execute();
 			//_movmentModule.setRoverSpeed(100);
 			//_movmentModule.moveArm(15);
 		} else{
 			Log.i("", "Algorithm stopped");
-			execution.cancel(true);
+			_execution.cancel(true);
 			//_movmentModule.stop();
 		}
 	}
@@ -244,16 +239,18 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 			SmallMotorDriver wrist_and_grasp = new SmallMotorDriver(ioio_, RobotSettings.WRIST_A01_PIN, RobotSettings.WRIST_A02_PIN, RobotSettings.GRASP_B01_PIN, RobotSettings.GRASP_B02_PIN);
 			_arm = new RoboticArmEdge(ioio_, wrist_and_grasp, sholder_and_elbow, turn_and_led, RobotSettings.ARM_STBY, RobotSettings.ARM_PWM);
 			_movmentModule = new MovmentSystem(ioio_, _chasiss, _arm, RobotSettings.WRIST_POT_PIN, RobotSettings.SHOLDER_POT_PIN, RobotSettings.ELBOW_POT_PIN, RobotSettings.DISTANCE_PIN);
+			_execution.set_movmentSystem(_movmentModule);
+			
 		}
 		
 		public void loop() throws ConnectionLostException {
-			try {
-				System.out.println(_movmentModule.getDistanceCentimeters());
-				System.out.println(_movmentModule.get_distance());
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try {
+//				System.out.println(_movmentModule.getDistanceCentimeters());
+//				System.out.println(_movmentModule.get_distance());
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 		
 	}//BaseIOIOLooper

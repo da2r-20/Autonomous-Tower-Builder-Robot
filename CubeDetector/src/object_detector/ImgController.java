@@ -2,18 +2,14 @@ package object_detector;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
-import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
-
 import com.example.blob_detect_test.Color;
 import com.example.blob_detect_test.CubeInfo;
 
-import android.util.Log;
 
 
 public class ImgController {

@@ -261,9 +261,17 @@ public class MovmentSystem implements Stoppable{
 	 * @throws ConnectionLostException
 	 */
 	public void turnAround(double dgree) throws ConnectionLostException{
-		long driveTime = (long) (RobotSettings.turnaroundTime * dgree);
-		_chassis.turnRight();
-		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
+		long driveTime = (long) (RobotSettings.turnaroundTime * Math.abs(dgree));
+		
+		if (dgree < 0){
+			_chassis.turnLeft();
+		}
+		else {
+			_chassis.turnRight();
+		}
+		System.out.println(driveTime);
+		
+		_stopTimer.schedule(new StopMovment(_chassis), driveTime * 1000);
 	}
 	
 	public void turnRight() throws ConnectionLostException{

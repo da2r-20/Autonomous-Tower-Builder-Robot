@@ -1,7 +1,5 @@
 package com.example.blob_detect_test;
 
-import java.util.ArrayList;
-
 public class CubeInfo {
 	
 	private static CubeInfo instance = null;
