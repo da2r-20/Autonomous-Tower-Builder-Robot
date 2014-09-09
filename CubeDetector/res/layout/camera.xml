@@ -32,7 +32,7 @@
     
     
     
- <org.opencv.android.NativeCameraView
+ <org.opencv.android.JavaCameraView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"

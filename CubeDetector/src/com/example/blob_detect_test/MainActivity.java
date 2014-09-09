@@ -50,7 +50,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	private MovmentSystem _movmentModule;
 	
 	//The displayed image type
-	private int imgType = RGB;
+	private int imgType = HSV;
 
 	
 	//main execution AsyncTask
