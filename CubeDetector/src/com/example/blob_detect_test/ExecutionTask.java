@@ -83,7 +83,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			}
 			*/
 			
-			
+			/*
 			horizLoc = CubeInfo.getInstance().getHorizontalLocation();
 			distance = CubeInfo.getInstance().getDistance();
 			//colorIndex = CubeInfo.getInstance().getColorIndex();
@@ -123,6 +123,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 					publishProgress(0);	
 				}
 			}
+			*/
 			
 		}
 		return null;
@@ -157,7 +158,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			}
 			else {
 				this.robotMove(STOP);
-				this.searchForCube(CubeInfo.getInstance().getColor());
+				this.searchForCube();
 			}
 		}	
 		this.robotMove(STOP);
