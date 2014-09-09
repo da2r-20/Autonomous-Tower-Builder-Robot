@@ -86,7 +86,9 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		//mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 		mOpenCvCameraView.setCvCameraViewListener(this);
 		
-		this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule);
+		Color[] colorArr = {Color.GREEN, Color.BLUE};
+		
+		this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule, colorArr);
 		//init cube info
 		CubeInfo.getInstance().setColor(Color.GREEN);
 		
