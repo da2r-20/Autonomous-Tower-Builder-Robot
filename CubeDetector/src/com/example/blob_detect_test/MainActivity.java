@@ -86,11 +86,11 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		//mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 		mOpenCvCameraView.setCvCameraViewListener(this);
 		
-		Color[] colorArr = {Color.YELLOW, Color.GREEN, Color.BLUE};
+		Color[] colorArr = {Color.YELLOW, Color.YELLOW, Color.YELLOW};
 		
 		this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule, colorArr);
 		//init cube info
-		CubeInfo.getInstance().setColor(Color.GREEN);
+		CubeInfo.getInstance().setColor(Color.YELLOW);
 		
 		//init execution task
 		//this.execution = new ExecutionTask(this);
@@ -170,6 +170,8 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		} else{
 			Log.i("", "Algorithm stopped");
 			_execution.cancel(true);
+			Color[] colorArr = {Color.YELLOW, Color.YELLOW, Color.YELLOW};
+			this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule, colorArr);
 			//_movmentModule.stop();
 		}
 	}
