@@ -335,6 +335,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		}
 	}
 	
+
 	private void updateState() throws ConnectionLostException, InterruptedException{
 		double currHorizLoc = CubeInfo.getInstance().getHorizontalLocation();
 		double currDist = CubeInfo.getInstance().getDistance();
