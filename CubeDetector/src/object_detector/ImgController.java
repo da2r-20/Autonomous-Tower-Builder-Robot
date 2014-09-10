@@ -133,6 +133,8 @@ public class ImgController {
 		
 		} else {
 			CubeInfo.getInstance().setFound(false);
+			//CubeInfo.getInstance().setDistance(10000);
+			//CubeInfo.getInstance().setHorizontalLocation(100000);
 		}
 		return result;
 	}
