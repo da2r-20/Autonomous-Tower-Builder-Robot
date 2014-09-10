@@ -9,8 +9,8 @@ package ioio.examples.hello;
 public class RobotSettings {
 	
 	public static final double movmentSpeed = 42.73; // cm/sec rover speed with arm on top
-	public static final double sholderMov = 0.00341237;
-	public static final double elbowMov = 0.0093869;
+	public static final double sholderMov = 0.00437469;
+	public static final double elbowMov = 0.00230979;
 	public static final double turnaroundTime = 0;
 	public static final int cubeSize = 3;
 	public static final double clawTime = 1.1;
@@ -64,6 +64,6 @@ public class RobotSettings {
 	public static final int BACK_CHASSIS_E2_PIN = 46;
 	
 	//distance sensor measurements
-	
+	public static final float TEN_CENTIMETERS = 0;
 	
 }
