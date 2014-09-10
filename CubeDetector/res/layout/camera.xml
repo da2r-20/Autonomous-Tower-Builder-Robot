@@ -28,6 +28,14 @@
 	        android:text="ToggleButton2"
 	        android:textOff="Threshed"
 	        android:textOn="Normal" />
+
+	    <Button
+	        android:id="@+id/button1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Next color"
+	        android:onClick="nextColor" /> />
+
 	</LinearLayout>
     
     

@@ -4,9 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
+
+import android.util.Log;
+
 import com.example.blob_detect_test.Color;
 import com.example.blob_detect_test.CubeInfo;
 
@@ -66,6 +73,21 @@ public class ImgController {
 			double blockHorizontalCenter = block.getCenter().x;
 			double centerDiff = blockHorizontalCenter - frame.getWidth()/2;
 			double distance = frame.getBlockDistance(block);
+			//Rect boundingBox = Imgproc.boundingRect(block.getCountour());
+			//double contArea  = Imgproc.contourArea(block.getCountour());
+			//double rectArea = boundingBox.width*boundingBox.height;
+			//double extent = contArea/rectArea;
+			//Log.i("", "Extend: " + extent);
+			//MatOfInt hull = new MatOfInt();
+			/*
+			Imgproc.convexHull(block.getCountour(),  hull);
+			MatOfPoint2f hullCont = null;
+			Imgproc.approxPolyDP(hull, hullCont, 0.001, true);
+			//double hullArea = Imgproc.contourArea();
+			double hullArea = Imgproc.contourArea(hull);
+			*/
+			//double solidity = (double) area/hullArea;
+			//Log.i("", "Solidity " + solidity);
 			//update cube info
 			CubeInfo.getInstance().setHorizontalLocation(centerDiff);
 			CubeInfo.getInstance().setDistance(distance);

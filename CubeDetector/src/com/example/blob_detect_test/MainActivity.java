@@ -55,6 +55,9 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	
 	//main execution AsyncTask
 	private ExecutionTask _execution;
+	
+	private Color[] colorArr = {Color.GREEN, Color.YELLOW, Color.BLUE};
+	private int currColor = 0;
 
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
@@ -86,7 +89,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		//mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 		mOpenCvCameraView.setCvCameraViewListener(this);
 		
-		Color[] colorArr = {Color.YELLOW, Color.YELLOW, Color.YELLOW};
+		
 		
 		this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule, colorArr);
 		//init cube info
@@ -161,7 +164,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 			};
 			handler.postAtFrontOfQueue(r);
 			*/
-				
+			CubeInfo.getInstance().setColor(Color.YELLOW);
 			_execution.execute();
 			
 			//execution.execute();
@@ -170,7 +173,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		} else{
 			Log.i("", "Algorithm stopped");
 			_execution.cancel(true);
-			Color[] colorArr = {Color.YELLOW, Color.YELLOW, Color.YELLOW};
+			//Color[] colorArr = {Color.YELLOW, Color.YELLOW, Color.YELLOW};
 			this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule, colorArr);
 			//_movmentModule.stop();
 		}
@@ -230,6 +233,12 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	{
 		super.onResume();
 		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_2, this, mLoaderCallback);
+	}
+	
+	public void nextColor(View view){
+		currColor = (currColor + 1) % 3;
+		CubeInfo.getInstance().setColor(colorArr[currColor]);
+		
 	}
 	
 	class Looper extends BaseIOIOLooper {
