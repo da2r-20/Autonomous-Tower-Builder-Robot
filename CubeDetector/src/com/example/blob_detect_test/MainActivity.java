@@ -142,7 +142,6 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		boolean on = ((ToggleButton) view).isChecked();
 		
 		if (on){
-			
 			Log.i("", "Algorithm started");
 			/*
 			Handler handler = new Handler();

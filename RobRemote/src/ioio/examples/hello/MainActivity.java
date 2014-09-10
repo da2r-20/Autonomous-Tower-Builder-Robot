@@ -2,13 +2,10 @@ package ioio.examples.hello;
 
 
 import ioio.examples.hello.R;
-
 import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;
 import ioio.lib.util.IOIOLooper;
 import ioio.lib.util.android.IOIOActivity;
-import android.hardware.SensorManager;
-
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.SeekBar;
@@ -142,13 +139,14 @@ public class MainActivity extends IOIOActivity {
 				e.printStackTrace();
 			}
 			
+			System.out.println("Elbow= "+_movmentModule.get_elbowPosition()+ " Sholder= "+_movmentModule.get_sholderPosition());
+			
 			//ensures that loop runs only if systemEnabled button is pressed
 			if (!systemEnabled.isChecked()) {
 				_chasiss.stop();
 				_arm.stop();
 				return;
 			}
-            System.out.println(_movmentModule.get_elbowPosition());
 			_arm.turnTurning(armTurnLeft.isPressed(), armTurnRight.isPressed());
 			_arm.toggleLed(ledOnOff.isChecked());
 			_arm.turnSholder(armSholderUp.isPressed(), armSholderDown.isPressed());

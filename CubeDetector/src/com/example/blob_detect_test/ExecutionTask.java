@@ -33,54 +33,53 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	protected Long doInBackground(URL... params) {
 		this.currColor = 1;
 		this.gotoBase = false;
-		try {
-			_movmentSystem.setRoverSpeed(100);
-			//_movmentSystem.turnLeft();
-			//_movmentSystem.moveForward(30);
-			
-			Log.i("", "Algorithm started");
-		} catch (ConnectionLostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+//		try {
+//			_movmentSystem.setRoverSpeed(100);
+////			_movmentSystem.moveArm(15);
+//			Log.i("", "Algorithm started");
+//		} catch (ConnectionLostException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}		
 		double horizLoc, distance;
 		Log.i("", "Starting main loop");
 		
-		while (this.colorArr.length - this.currColor > 0){
-			if (isCancelled()){
-				Log.i("", "Task stopped");
-				try {
-					robotMove(STOP);
-				} catch (ConnectionLostException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				break;
-			}
-			if (this.gotoBase){
-				CubeInfo.getInstance().setColor(this.colorArr[0]);
-				this.gotoBase = false;
-			} else {
-				CubeInfo.getInstance().setColor(this.colorArr[currColor]);
-				this.gotoBase = true;
-				currColor++;
-			}
-			
-			try {
-				this.searchForCube();
-			} catch (ConnectionLostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			
-			try {
-				this.goToCube();
-			} catch (ConnectionLostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+//		while (this.colorArr.length - this.currColor > 0){
+//			if (isCancelled()){
+//				Log.i("", "Task stopped");
+//				try {
+//					robotMove(STOP);
+//				} catch (ConnectionLostException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				break;
+//			}
+//			if (this.gotoBase){
+//				CubeInfo.getInstance().setColor(this.colorArr[0]);
+//				this.gotoBase = false;
+//			} else {
+//				CubeInfo.getInstance().setColor(this.colorArr[currColor]);
+//				this.gotoBase = true;
+//				currColor++;
+//			}
+//			
+//			try {
+//				this.searchForCube();
+//			} catch (ConnectionLostException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//			
+//			try {
+//				this.goToCube();
+//			} catch (ConnectionLostException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 		
 		//while(true){
 			
