@@ -157,7 +157,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			}
 			else {
 				this.robotMove(STOP);
-				this.searchForCube(CubeInfo.getInstance().getColor());
+				this.searchForCube();
 			}
 		}	
 		this.robotMove(STOP);

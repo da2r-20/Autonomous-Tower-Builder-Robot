@@ -19,6 +19,10 @@ public class MovmentSystem implements Stoppable{
 	private AnalogInput _elbowPosition;
 	private AnalogInput _distance;
 	private Timer _stopTimer = new Timer("Stop Timer");
+	private static final float y1 = 75;
+	private static final float x2 = (float) 0.607;
+	private static final float diferential = -y1/x2;  
+
 
 	
 	public MovmentSystem(IOIO ioio, ChassisFrame chassis, RoboticArmEdge arm, int wristPositionPin, int sholderPositionPin, int elbowPositionPin, int distancePin) {
@@ -421,10 +425,6 @@ public class MovmentSystem implements Stoppable{
 	 * @throws InterruptedException 
 	 */
 	public float getDistanceCentimeters() throws InterruptedException, ConnectionLostException{
-		float distanceRead = this.get_distance();
-		
-				
-		return (1 / distanceRead) * ((float) 80);
-
+		return (float) 34.667 - (float)38.61 * this.get_distance();
 	}
 }
