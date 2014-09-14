@@ -129,7 +129,7 @@ public class Frame {
 			extent = contourArea/(boundingBox.width*boundingBox.height);
 			Log.i("", "Aspect ratio: " + aspectRatio);
 			Log.i("", "Extent: " + extent);
-			if (contourArea > maxArea && contourArea > 500 && aspectRatio > 0.7 && aspectRatio < 1.2 && extent > 0.6 && extent < 1.2){
+			if (contourArea > maxArea && contourArea > 300 && aspectRatio > 0.5 && aspectRatio < 1.5 && extent > 0.6 && extent < 1.5){
 				maxArea = contourArea;
 				//Log.i("contour area", String.valueOf(maxArea));
 				maxContour = contour;
@@ -170,7 +170,7 @@ public class Frame {
 		Mat dilateElement = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(8,8));
 		
 		Imgproc.erode(target, target, erodeElement);
-		//Imgproc.erode(target, target, erodeElement);
+		Imgproc.erode(target, target, erodeElement);
 		//Imgproc.erode(target, target, erodeElement);
 		//Imgproc.erode(target, target, erodeElement);
 		//Imgproc.erode(target, target, erodeElement);

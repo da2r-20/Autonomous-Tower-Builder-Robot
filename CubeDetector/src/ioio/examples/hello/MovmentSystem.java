@@ -339,7 +339,11 @@ public class MovmentSystem implements Stoppable{
 		_chassis.driveBackwards();
 		_stopTimer.schedule(new StopMovment(_chassis), driveTime);
 	}
-
+	
+	public void driveBackwardsCont() throws ConnectionLostException{
+		_chassis.driveBackwards();
+	}
+	
 	@Override
 	public void stop() throws ConnectionLostException {
 		_arm.stop();
