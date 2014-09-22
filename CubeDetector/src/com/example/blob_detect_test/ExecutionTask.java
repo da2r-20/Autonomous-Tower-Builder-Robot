@@ -14,6 +14,8 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	private boolean isMoving = false;
 	private Color[] colorArr;
 	private int currColor;
+	private int center = 30;
+	private int distance = 15;
 	private boolean gotoBase;
 	private final static int MOVE = 1;
 	private final static int RIGHT = 2;
@@ -34,52 +36,60 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		this.currColor = 1;
 		this.gotoBase = false;
 		
-//		try {
-//			_movmentSystem.setRoverSpeed(100);
-////			_movmentSystem.moveArm(15);
-//			Log.i("", "Algorithm started");
-//		} catch (ConnectionLostException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}		
+		try {
+			_movmentSystem.setRoverSpeed((float)0.5);
+//			_movmentSystem.moveSholder(80);
+			
+			Log.i("", "Algorithm started");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		double horizLoc, distance;
 		Log.i("", "Starting main loop");
 		
-//		while (this.colorArr.length - this.currColor > 0){
-//			if (isCancelled()){
-//				Log.i("", "Task stopped");
-//				try {
-//					robotMove(STOP);
-//				} catch (ConnectionLostException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				break;
-//			}
-//			if (this.gotoBase){
-//				CubeInfo.getInstance().setColor(this.colorArr[0]);
-//				this.gotoBase = false;
-//			} else {
-//				CubeInfo.getInstance().setColor(this.colorArr[currColor]);
-//				this.gotoBase = true;
-//				currColor++;
-//			}
-//			
-//			try {
-//				this.searchForCube();
-//			} catch (ConnectionLostException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			
-//			
-//			try {
-//				this.goToCube();
-//			} catch (ConnectionLostException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
+		while (this.colorArr.length - this.currColor > 0){
+			if (isCancelled()){
+				Log.i("", "Task stopped");
+				try {
+					robotMove(STOP);
+				} catch (ConnectionLostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			}
+			if (this.gotoBase){
+				CubeInfo.getInstance().setColor(this.colorArr[0]);
+				this.gotoBase = false;
+			} else {
+				CubeInfo.getInstance().setColor(this.colorArr[currColor]);
+				this.gotoBase = true;
+				currColor++;
+			}
+			
+			try {
+				this.searchForCube();
+			} catch (ConnectionLostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			try {
+				this.goToCube();
+			} catch (ConnectionLostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		//while(true){
 			
@@ -147,7 +157,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	}
 	
 	
-	protected void searchForCube() throws ConnectionLostException{
+	protected void searchForCube() throws ConnectionLostException, InterruptedException{
 		Log.i("", "Searching for cube");
 		double horizLoc = CubeInfo.getInstance().getHorizontalLocation();
 		while (!CubeInfo.getInstance().getFound()){
@@ -158,22 +168,29 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			//Log.i("", "Found? " + CubeInfo.getInstance().getFound());
 			//TODO robot turn right/left
 			this.robotMove(RIGHT);
+			Thread.sleep(100);
+			this.robotMove(STOP);
+			Thread.sleep(100);
+			
 		}
 		this.robotMove(STOP);
 		
-		while (horizLoc < -100 || horizLoc > 100){
+		while (horizLoc < -this.center || horizLoc > this.center){
 			Log.i("", "Horizontal location: " + String.valueOf(horizLoc));
 			if (isCancelled()){
 				this.robotMove(STOP);
 				break;
 			}
-			if (horizLoc < -30){
+			if (horizLoc < -this.center){
 				//Log.i("", "Turning left");
-				this.robotMove(LEFT);
+				this.robotMove(LEFT);		
 			} else {
 				//Log.i("", "Turning right");
 				this.robotMove(RIGHT);
 			}
+			Thread.sleep(100);
+			this.robotMove(STOP);
+			Thread.sleep(100);
 			horizLoc = CubeInfo.getInstance().getHorizontalLocation();
 		}
 		this.robotMove(STOP);
@@ -182,12 +199,12 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		
 	}
 	
-	protected void goToCube() throws ConnectionLostException{
+	protected void goToCube() throws ConnectionLostException, InterruptedException{
 		this.robotMove(STOP);
 		Log.i("", "Going to cube");
 		double horizLoc = CubeInfo.getInstance().getHorizontalLocation();
 		
-		while (CubeInfo.getInstance().getDistance() > 20){
+		while (CubeInfo.getInstance().getDistance() > this.distance){
 			if (isCancelled()){
 				this.robotMove(STOP);
 				break;
@@ -195,10 +212,13 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			//Log.i("", "goToCube distance: " +  String.valueOf(CubeInfo.getInstance().getDistance()));
 			horizLoc = CubeInfo.getInstance().getHorizontalLocation();
 			//Log.i("", "goToCube horizontal location" +  String.valueOf(horizLoc));
-			if (horizLoc > -100 && horizLoc < 100){
+			if (horizLoc > -this.center && horizLoc < this.center){
 				//Log.i("", "MOVE!");
 				//this._movmentSystem.moveForwardCont();
 				this.robotMove(MOVE);
+				//Thread.sleep(100);
+				//this.robotMove(STOP);
+				//Thread.sleep(100);
 				//Log.i("", "Going to cube, horizontal location: " +  String.valueOf(horizLoc));
 			}
 			else {
@@ -208,7 +228,9 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			}
 		}	
 		//Log.i("", "STOP!");
+		
 		this.robotMove(STOP);
+		Thread.sleep(1000);
 	}
 	
 	private void robotMove(int movement) throws ConnectionLostException{
@@ -220,10 +242,11 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			}	
 		} else if (movement > STOP) {
 			this.isMoving = true;
-			_movmentSystem.setRoverSpeed(100);
+			_movmentSystem.setRoverSpeed((float)0.7);
 			switch (movement){
 			case(MOVE):
-				Log.i("", "Issued move command");	
+				Log.i("", "Issued move command");
+				_movmentSystem.setRoverSpeed((float)0.4);
 				this._movmentSystem.moveForwardCont();
 				break;
 			case(RIGHT):

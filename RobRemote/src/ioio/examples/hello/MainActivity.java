@@ -134,10 +134,6 @@ public class MainActivity extends IOIOActivity {
 		}
 		
 		public void loop() throws ConnectionLostException, InterruptedException {
-			try{
-			} catch (Exception e){
-				e.printStackTrace();
-			}
 			
 			System.out.println("Elbow= "+_movmentModule.get_elbowPosition()+ " Sholder= "+_movmentModule.get_sholderPosition());
 			

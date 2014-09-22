@@ -7,9 +7,12 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+
+import android.util.Log;
 
 import com.example.blob_detect_test.Color;
 
@@ -30,6 +33,10 @@ public class Frame {
 	private List<Mat> hsvPlanes = new ArrayList<Mat>();
 	private List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
 	private Mat hierarchy = new Mat();
+	
+	private Rect boundingBox = null;
+	private double aspectRatio;
+	private double extent;
 	
 	public Frame(double focalLength, double objectWidth){
 		this.focalLength = focalLength;
@@ -117,7 +124,12 @@ public class Frame {
 		MatOfPoint maxContour = null;
 		for (MatOfPoint contour : contours){
 			contourArea = Imgproc.contourArea(contour);
-			if (contourArea > maxArea && contourArea > 500){
+			boundingBox = Imgproc.boundingRect(contour);
+			aspectRatio = (double) boundingBox.width/boundingBox.height;
+			extent = contourArea/(boundingBox.width*boundingBox.height);
+			Log.i("", "Aspect ratio: " + aspectRatio);
+			Log.i("", "Extent: " + extent);
+			if (contourArea > maxArea && contourArea > 500 && aspectRatio > 0.6 && aspectRatio < 1.4 && extent > 0.5 && extent < 1.2){
 				maxArea = contourArea;
 				//Log.i("contour area", String.valueOf(maxArea));
 				maxContour = contour;

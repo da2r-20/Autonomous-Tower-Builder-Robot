@@ -148,7 +148,7 @@ public class MovmentSystem implements Stoppable{
 		if(degree>90){
 			degree=90;
 		}
-		double PositionToGet=0.7722385-(degree*(RobotSettings.elbowMov));
+		double PositionToGet = 0.7311828-(degree*(RobotSettings.elbowMov));
 		float elbowPosition=get_elbowPosition();
 		if(elbowPosition<PositionToGet){
 		  while(get_elbowPosition()<PositionToGet){
