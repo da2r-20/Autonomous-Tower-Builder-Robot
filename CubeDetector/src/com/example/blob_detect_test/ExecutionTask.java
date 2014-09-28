@@ -1,6 +1,7 @@
 package com.example.blob_detect_test;
 
 import ioio.examples.hello.MovmentSystem;
+import ioio.examples.hello.RobotSettings;
 import ioio.lib.api.exception.ConnectionLostException;
 import java.net.URL;
 import android.os.AsyncTask;
@@ -69,8 +70,14 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		try {
 //			_movmentSystem.setRoverSpeed((float)0.5);
 //			_movmentSystem.moveSholder(80);
-			_movmentSystem.releaseCube();
-			_movmentSystem.takeCube();
+//			_movmentSystem.releaseCube();
+//			_movmentSystem.moveSholder(90);
+//			_movmentSystem.moveElbow(0);
+//			_movmentSystem.grabCube();
+//			Thread.sleep((long)(RobotSettings.clawTime * 1000));
+			_movmentSystem.moveArm(10);
+//			_movmentSystem.bringArmUp();
+			
 			Log.i("", "Algorithm started");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
