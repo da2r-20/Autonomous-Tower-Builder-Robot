@@ -406,6 +406,7 @@ public class MovmentSystem implements Stoppable{
 	public void takeCube() throws ConnectionLostException, InterruptedException{
 		this.moveArm(this.getDistanceCentimeters());
 		this.grabCube();
+		Thread.sleep((long)(RobotSettings.clawTime * 1000));
 		this.bringArmUp();
 	}
 	

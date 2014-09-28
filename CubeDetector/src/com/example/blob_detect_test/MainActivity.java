@@ -258,7 +258,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		public void loop() throws ConnectionLostException {
 			try {
 				
-				Log.i("Sholder", String.valueOf(( _movmentModule.get_sholderPosition())));
+				Log.i("Distance", String.valueOf(( _movmentModule.getDistanceCentimeters())));
 //				System.out.println(_movmentModule.get_distance());
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

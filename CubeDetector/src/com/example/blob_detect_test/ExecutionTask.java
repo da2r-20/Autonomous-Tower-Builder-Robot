@@ -67,9 +67,10 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		this.gotoBase = false;
 		
 		try {
-			_movmentSystem.setRoverSpeed((float)0.5);
+//			_movmentSystem.setRoverSpeed((float)0.5);
 //			_movmentSystem.moveSholder(80);
-			
+			_movmentSystem.releaseCube();
+			_movmentSystem.takeCube();
 			Log.i("", "Algorithm started");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -79,48 +80,48 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		Log.i("", "Starting main loop");
 		
 		this.currColor = 1;
-		while (this.currColor < this.colorArr.length){
-			if (isCancelled()){
-				Log.i("", "Task stopped");
-				try {
-					robotMove(STOP);
-				} catch (ConnectionLostException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				break;
-			}
-			
-			if (this.gotoBase){
-				CubeInfo.getInstance().setColor(this.colorArr[0]);
-				Log.i("Color change", "Color index is now: " + 0);
-				this.gotoBase = false;
-				currColor++;
-			} else {
-				CubeInfo.getInstance().setColor(this.colorArr[currColor]);
-				Log.i("Color change", "Color index is now: " + String.valueOf(currColor));
-				this.gotoBase = true;
-			}
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			try {
-				this.magicalAlgorithm();
-			} catch (ConnectionLostException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
+//		while (this.currColor < this.colorArr.length){
+//			if (isCancelled()){
+//				Log.i("", "Task stopped");
+//				try {
+//					robotMove(STOP);
+//				} catch (ConnectionLostException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				break;
+//			}
+//			
+//			if (this.gotoBase){
+//				CubeInfo.getInstance().setColor(this.colorArr[0]);
+//				Log.i("Color change", "Color index is now: " + 0);
+//				this.gotoBase = false;
+//				currColor++;
+//			} else {
+//				CubeInfo.getInstance().setColor(this.colorArr[currColor]);
+//				Log.i("Color change", "Color index is now: " + String.valueOf(currColor));
+//				this.gotoBase = true;
+//			}
+//			try {
+//				Thread.sleep(500);
+//			} catch (InterruptedException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//			
+//			try {
+//				this.magicalAlgorithm();
+//			} catch (ConnectionLostException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			} catch (InterruptedException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//		}// while
 		return null;
 	}
 	
