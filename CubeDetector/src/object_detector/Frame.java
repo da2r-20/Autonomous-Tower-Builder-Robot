@@ -127,8 +127,8 @@ public class Frame {
 			boundingBox = Imgproc.boundingRect(contour);
 			aspectRatio = (double) boundingBox.width/boundingBox.height;
 			extent = contourArea/(boundingBox.width*boundingBox.height);
-			Log.i("", "Aspect ratio: " + aspectRatio);
-			Log.i("", "Extent: " + extent);
+			//Log.i("", "Aspect ratio: " + aspectRatio);
+			//Log.i("", "Extent: " + extent);
 			if (contourArea > maxArea && contourArea > 300 && aspectRatio > 0.5 && aspectRatio < 1.5 && extent > 0.6 && extent < 1.5){
 				maxArea = contourArea;
 				//Log.i("contour area", String.valueOf(maxArea));

@@ -177,7 +177,7 @@ public class MovmentSystem implements Stoppable{
 		double [] cube= new double [2];
 		cube[0]=0;
 		cube[1] = RobotSettings.cubeSize;
-		double [] D1_base={distance,18};
+		double [] D1_base={distance,16.5};
 		double d1=9;
 		double d2=11;
 		double d3=4.5;
@@ -191,7 +191,7 @@ public class MovmentSystem implements Stoppable{
 		xx[1]=D0[1]-D3[1];
 		double b0 =Math.sqrt(Math.pow(xx[0], 2)+Math.pow(xx[1], 2));
 		if(b0>d1+b3){
-		this.moveForward(b0-(d1+b3)+3);
+		//this.moveForward(b0-(d1+b3)+3);
 		this.moveArm(distance-(b0-(d1+b3)+3));
 		return;
 		}
@@ -207,7 +207,7 @@ public class MovmentSystem implements Stoppable{
 		double a2_degrees=a2*(180/Math.PI);
 
 		this.moveSholder(90-a1_degrees);
-		this.moveElbow(180-a2_degrees);
+		this.moveElbow(90-a2_degrees);
 		//System.out.println("sholder need to move:" + (90-a1_degrees));
 		//System.out.println("elbow need to move:" + (90-a2_degrees));
 	}
@@ -237,7 +237,7 @@ public class MovmentSystem implements Stoppable{
 		xx[1] = D0[1]-D3[1];
 		double b0 = Math.sqrt(Math.pow(xx[0], 2)+Math.pow(xx[1], 2));
 		if(b0 > d1 + b3){
-		this.moveForward(b0 - (d1 + b3) + 3);
+		//this.moveForward(b0 - (d1 + b3) + 3);
 		this.moveArm(distance - (b0 - (d1 + b3) + 3));
 		return;
 		}
@@ -253,7 +253,7 @@ public class MovmentSystem implements Stoppable{
 		double a2_degrees = a2 * (180 / Math.PI);
 
 		this.moveSholder(90-a1_degrees);
-		this.moveElbow(180-a2_degrees);
+		this.moveElbow(90-a2_degrees);
 		//System.out.println("sholder need to move:" + (90-a1_degrees));
 		//System.out.println("elbow need to move:" + (90-a2_degrees));
 
@@ -404,8 +404,10 @@ public class MovmentSystem implements Stoppable{
 	 * @throws ConnectionLostException
 	 */
 	public void takeCube() throws ConnectionLostException, InterruptedException{
-		this.moveArm(this.getDistanceCentimeters());
+		
+		this.moveArm(15/*this.getDistanceCentimeters()*/);
 		this.grabCube();
+		Thread.sleep(1200);
 		this.bringArmUp();
 	}
 	

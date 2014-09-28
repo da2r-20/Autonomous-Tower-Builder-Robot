@@ -256,14 +256,24 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		}
 		
 		public void loop() throws ConnectionLostException {
+			/*
 			try {
-				
-				Log.i("Sholder", String.valueOf(( _movmentModule.get_sholderPosition())));
-//				System.out.println(_movmentModule.get_distance());
+				Log.i("Sensor distance",String.valueOf(_movmentModule.get_distance()));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			Log.i("Camera distance",String.valueOf(CubeInfo.getInstance().getDistance()));
+			Log.i("Cube location", String.valueOf(CubeInfo.getInstance().getHorizontalLocation()));
+			*/
+			//try {
+				
+				//Log.i("Sholder", String.valueOf(( _movmentModule.get_sholderPosition())));
+//				System.out.println(_movmentModule.get_distance());
+			//} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+			//	e.printStackTrace();
+			//}
 		}
 		
 	}//BaseIOIOLooper
