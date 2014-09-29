@@ -195,6 +195,7 @@ public class RoboticArmEdge implements Stoppable{
 		_sholder_and_elbow.stop();
 	}
 	
+	
 	/**
 	 * closes all pins
 	 */

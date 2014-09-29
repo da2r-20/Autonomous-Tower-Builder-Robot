@@ -9,10 +9,11 @@ public enum Color {
 	//BLUE (new Scalar(90,153,25), new Scalar(126,255,255)),
 	
 	
-	YELLOW (new Scalar(16,77,34), new Scalar(64,210,255)),
+	//YELLOW (new Scalar(16,77,34), new Scalar(64,210,255)),
+	YELLOW (new Scalar(21,0,0), new Scalar(49,255,255)),
 	
 	//afternoon values
-	GREEN (new Scalar(50,115,0), new Scalar(92,229,255)),
+	GREEN (new Scalar(66,105,29), new Scalar(100,255,255)),
 	BLUE (new Scalar(93,115,0), new Scalar(147,255,255));
 	
 	//evening values
