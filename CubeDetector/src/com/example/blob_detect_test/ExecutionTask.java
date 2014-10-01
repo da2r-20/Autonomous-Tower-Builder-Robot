@@ -76,52 +76,41 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		this.gotoBase = false;
 		
 		try {
-//			_movmentSystem.setRoverSpeed((float)0.5);
 //			_movmentSystem.setRoverSpeed((float)moveSpeed);
-//			_movmentSystem.moveSholder(80);
-//			_movmentSystem.releaseCube();
-//			_movmentSystem.moveSholder(90);
-//			_movmentSystem.moveElbow(0);
-//			_movmentSystem.grabCube();
 			_movmentSystem.releaseCube();
-//			_movmentSystem.moveArm(50, 30);
 			_movmentSystem.moveSholder(45);
 			_movmentSystem.moveElbow(45);
 			
-//			Thread.sleep(1000);
 			
 			//grabbing first cube
-			_movmentSystem.moveArmToPutCube(10, 2, _movmentSystem.SHOLDER_FIRST);
-//			Thread.sleep(1000);
+			_movmentSystem.moveArmToPutCube(15, 2, _movmentSystem.SHOLDER_FIRST);
 			_movmentSystem.grabCube();
-			Thread.sleep((long)(RobotSettings.clawTime * 1000));			
-			_movmentSystem.moveSholder(45);
-			_movmentSystem.moveElbow(45);
-//			
-//			
-//			_movmentSystem.moveArm(80, -20);
-//			Thread.sleep(1000);
-			_movmentSystem.moveArmToPutCube(13,1, _movmentSystem.SHOLDER_FIRST);
-//			Thread.sleep(1000)w;
-			_movmentSystem.releaseCube();
-			Thread.sleep((long)(RobotSettings.clawTime * 1000));
-//			
-			_movmentSystem.moveSholder(45);
-			_movmentSystem.moveElbow(45);
-//			
-			_movmentSystem.moveArmToPutCube(10,1, _movmentSystem.ELBOW_FIRST);
-			_movmentSystem.grabCube();
-			Thread.sleep((long)(RobotSettings.clawTime * 1000));
+
+//			Thread.sleep((long)(RobotSettings.clawTime * 1000));			
+//			_movmentSystem.moveSholder(45);
+//			_movmentSystem.moveElbow(45);
 //
-			_movmentSystem.moveSholder(45);
-			_movmentSystem.moveElbow(45);
+//			_movmentSystem.moveArmToPutCube(15,1, _movmentSystem.SHOLDER_FIRST);
+//			_movmentSystem.releaseCube();
+//			Thread.sleep((long)(RobotSettings.clawTime * 1000));
+////			
+//			_movmentSystem.moveSholder(45);
+//			_movmentSystem.moveElbow(45);
 //
-			_movmentSystem.moveArmToPutCube(13,2, _movmentSystem.SHOLDER_FIRST);
-			_movmentSystem.releaseCube();
-			Thread.sleep((long)(RobotSettings.clawTime * 1000));			
-			_movmentSystem.moveSholder(45);
-			_movmentSystem.moveElbow(45);
-			
+//			_movmentSystem.moveArmToPutCube(10,1, _movmentSystem.ELBOW_FIRST);
+//			_movmentSystem.grabCube();
+//			Thread.sleep((long)(RobotSettings.clawTime * 1000));
+////
+//			_movmentSystem.moveElbow(20);
+//			_movmentSystem.moveSholder(45);
+//			
+////
+//			_movmentSystem.moveArmToPutCube(15,2, _movmentSystem.ELBOW_FIRST);
+//			_movmentSystem.releaseCube();
+//			Thread.sleep((long)(RobotSettings.clawTime * 1000));			
+//			_movmentSystem.moveSholder(45);
+//			_movmentSystem.moveElbow(45);
+//			
 			//			_movmentSystem.bringArmUp();
 			Log.i("", "Algorithm started");
 		} catch (Exception e) {
@@ -245,7 +234,12 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				break;
 			case(TAKE):
 				this.robotMove(STOP);
-				this._movmentSystem.takeCube();
+				try {
+					this._movmentSystem.takeCube();
+				} catch (NanExeption e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				Thread.sleep(20000);
 				this.robotMove(STOP);
 				break;
@@ -375,9 +369,4 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		//(TextView)findViewById(R.id.RobotDirection)
 		//setProgressPercent(progress[0]);
 	}
-	
-	public void set_movmentSystem(MovmentSystem _movmentSystem) {
-		this._movmentSystem = _movmentSystem;
-	}
-
 }

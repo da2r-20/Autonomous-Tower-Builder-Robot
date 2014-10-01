@@ -13,7 +13,7 @@ public class RobotSettings {
 	public static final double elbowMov = 0.004297683;
 	public static final double turnaroundTime = 0;
 	public static final int cubeSize = 3;
-	public static final double clawTime = 1.0;
+	public static final double clawTime = 1.05;
 
 	//movment limitations
 	public static final float SHOLDER_LIM_UP = (float) 0.79;

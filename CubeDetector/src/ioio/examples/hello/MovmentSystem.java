@@ -3,6 +3,8 @@ package ioio.examples.hello;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.example.blob_detect_test.NanExeption;
+
 import ioio.lib.api.AnalogInput;
 import ioio.lib.api.IOIO;
 import ioio.lib.api.exception.ConnectionLostException;
@@ -164,10 +166,8 @@ public class MovmentSystem implements Stoppable{
 		}
 		else if (elbowPosition > PositionToGet){
 			_arm.elbowUp();
-			System.out.println(PositionToGet);
 			while(get_elbowPosition() > PositionToGet){
 				Thread.sleep(10);
-				System.out.println(get_elbowPosition());
 			}
 			
 		}
@@ -180,47 +180,10 @@ public class MovmentSystem implements Stoppable{
 	 * @param distance rover distance from the cube
 	 * @throws ConnectionLostException
 	 * @throws InterruptedException
+	 * @throws NanExeption 
 	 */
-	public void moveArm(double distance) throws ConnectionLostException, InterruptedException{
-		double [] cube= new double [2];
-		cube[0]=0;
-		cube[1] = RobotSettings.cubeSize;
-		double [] D1_base={distance,16.5};
-		double d1=9;
-		double d2=11;
-		double d3=4.5;
-		double a3=(43.43) *(Math.PI/180);
-		double [] D0=D1_base;
-		double [] D3=cube;
-		double b3=Math.sqrt(Math.pow(d2, 2)+Math.pow(d3, 2)-2*d2*d3*Math.cos(Math.PI-a3));
-
-		double [] xx= new double [2];
-		xx[0]=D0[0]-D3[0];
-		xx[1]=D0[1]-D3[1];
-		double b0 =Math.sqrt(Math.pow(xx[0], 2)+Math.pow(xx[1], 2));
-		
-		if(b0>d1+b3){
-			//this.moveForward(b0-(d1+b3)+3);
-			this.moveArm(distance-(b0-(d1+b3)+3));
-			return;
-		}
-
-		double beta0=Math.acos((Math.pow(b0, 2) - Math.pow(d1, 2)- Math.pow(b3, 2))/(-2*d1*b3));
-		//System.out.println(beta0);
-		double gamma3=Math.asin(d3/(b3*Math.sin(Math.PI-a3)));
-		double a2=Math.PI-beta0-gamma3;
-		double beta3=Math.asin(b3/(b0*Math.sin(beta0)));
-		double betax=Math.atan(xx[0]/xx[1]);
-		double a1=Math.PI-betax-beta3;
-
-		double a1_degrees=a1*(180/Math.PI);
-		double a2_degrees=a2*(180/Math.PI);
-
-
-		this.moveSholder(90-a1_degrees);
-		this.moveElbow(90-a2_degrees);
-		//System.out.println("sholder need to move:" + (90-a1_degrees));
-		//System.out.println("elbow need to move:" + (90-a2_degrees));
+	public void moveArm(double distance) throws ConnectionLostException, InterruptedException, NanExeption{
+		moveArmToPutCube(distance, 1, SHOLDER_FIRST);
 	}
 
 	/**
@@ -229,53 +192,89 @@ public class MovmentSystem implements Stoppable{
 	 * @param amountOfCube the number of cube in the tower
 	 * @throws ConnectionLostException
 	 * @throws InterruptedException
+	 * @throws NanExeption 
 	 */
-	public void moveArmToPutCube(double distance, int amountOfCube, int order) throws ConnectionLostException, InterruptedException{
+	public void moveArmToPutCube(double distance, int amountOfCube, int order) throws ConnectionLostException, InterruptedException, NanExeption{
 		double[] cube = new double [2];
+		
+		// cube vertical position
 		cube[0] = 0;
-		cube[1] = RobotSettings.cubeSize * amountOfCube + RobotSettings.cubeSize/2 + 2.5;
+		// cube height
+		cube[1] = RobotSettings.cubeSize * amountOfCube;
+		
+		// fixing the first joint distance from cube, the sensor is closer to the cube
+		distance += 5;
+		
+		//height to the base of the arm's first joint
 		double[] D1_base = {distance, 18};
+		//length from shoulder to elbow
 		double d1 = 9;
-		double d2 = 11;
-		double d3 = 4.5;
-		double a3 = (43.43) * (Math.PI / 180);
+		//length from elbow to wrist	
+		double d2 = 12;
+		//length from wrist to hand
+		double d3 = 5.5;
+
+		double a3 = (37.2) * (Math.PI / 180);
 		double[] D0 = D1_base;
-		double[] D3 = cube;
+		double[] D3 = new double[2];
+		// cube vertical position
+		D3[0] = cube[0];
+		// cube height
+		D3[1] = cube[1];
+		
+
 		double b3 = Math.sqrt(Math.pow(d2, 2) + Math.pow(d3, 2) - 2 * d2 * d3 * Math.cos(Math.PI - a3));
 
 		double[] xx = new double [2];
-		xx[0] = D0[0]-D3[0];
-		xx[1] = D0[1]-D3[1];
-		double b0 = Math.sqrt(Math.pow(xx[0], 2)+Math.pow(xx[1], 2));
+		xx[0] = D0[0]; 
+		xx[1] = D0[1] - RobotSettings.cubeSize;
+		double b0 = Math.sqrt(Math.pow(xx[0], 2) + Math.pow(xx[1], 2));
 		
 		if(b0 > d1 + b3){
 			//this.moveForward(b0 - (d1 + b3) + 3);
-			this.moveArm(distance - (b0 - (d1 + b3) + 3));
+			//this.moveArm(distance - (b0 - (d1 + b3) + 3));
 			return;
 		}
 		
 		double beta0 = Math.acos((Math.pow(b0, 2) - Math.pow(d1, 2) - Math.pow(b3, 2)) / (-2*d1*b3));
+		if (Double.isNaN(beta0)) throw new NanExeption("beta0 - acos");
+		
 		//System.out.println(beta0);
 		double gamma3 = Math.asin(d3 / (b3 * Math.sin(Math.PI - a3)));
+		if (Double.isNaN(gamma3)) throw new NanExeption("gamma3 - asin");
+		
 		double a2 = Math.PI - beta0 - gamma3;
-		double beta3 = Math.asin(b3 / ( b0*Math.sin(beta0)));
+		double beta3 = Math.asin(b3 / (b0 * Math.sin(beta0)));
+		if (Double.isNaN(beta3)) throw new NanExeption("beta3 - asin");
+		
 		double betax = Math.atan(xx[0] / xx[1]);
+		
 		double a1 =  Math.PI - betax - beta3;
 
 		double a1_degrees = a1 * (180 / Math.PI);
 		double a2_degrees = a2 * (180 / Math.PI);
 
+		
+		if (Double.isNaN(90-a1_degrees) || Double.isNaN(90-a2_degrees)){
+			System.out.println(b3 / ( b0*Math.sin(beta0)));
+			System.out.println(a1);
+			System.out.println(betax);
+			System.out.println(beta3);			
+			System.out.println(D3[0]);			
+			System.exit(0);
+		}
+
 		if (order == SHOLDER_FIRST){
-			this.moveSholder(90-a1_degrees);
-			this.moveElbow(90-a2_degrees);
+			this.moveSholder(90 - a1_degrees);
+			this.moveElbow(90 - a2_degrees);
 			
 		} else if (order == ELBOW_FIRST){
-			this.moveElbow(90-a2_degrees);
-			this.moveSholder(90-a1_degrees);
+			this.moveElbow(90 - a2_degrees);
+			this.moveSholder(90 - a1_degrees);
 		}
-		System.out.println("sholder need to move:" + (90-a1_degrees));
-		System.out.println("elbow need to move:" + (90-a2_degrees));
 
+		 System.out.println("sholder need to move:" + (a1_degrees));
+		 System.out.println("elbow need to move:" + (90-a2_degrees));
 	}
 
 	/**
@@ -334,7 +333,7 @@ public class MovmentSystem implements Stoppable{
 		long driveTime =(long) (RobotSettings.clawTime * 1000);
 		_arm.closeHand();
 		
-		_stopTimer.schedule(new StopMovment(_arm), driveTime);
+		_stopTimer.schedule(new StopMovment(_arm._wrist_and_grasp), driveTime);
 	}
 
 	/**
@@ -345,7 +344,7 @@ public class MovmentSystem implements Stoppable{
 		long driveTime =(long) (RobotSettings.clawTime * 1000);
 		_arm.openHand();
 		
-		_stopTimer.schedule(new StopMovment(_arm), driveTime);
+		_stopTimer.schedule(new StopMovment(_arm._wrist_and_grasp), driveTime);
 	}
 
 	/**
@@ -421,8 +420,9 @@ public class MovmentSystem implements Stoppable{
 	 * picks up a cube, releases it and brings back up the arm
 	 * @throws InterruptedException 
 	 * @throws ConnectionLostException
+	 * @throws NanExeption 
 	 */
-	public void takeCube() throws ConnectionLostException, InterruptedException{
+	public void takeCube() throws ConnectionLostException, InterruptedException, NanExeption{
 		
 		this.moveArm(15/*this.getDistanceCentimeters()*/);
 		this.grabCube();
@@ -436,8 +436,9 @@ public class MovmentSystem implements Stoppable{
 	 * @param level the level of the cube to be put at, for example - cube 3 == level 3
 	 * @throws ConnectionLostException
 	 * @throws InterruptedException
+	 * @throws NanExeption 
 	 */
-	public void placeCube(int level) throws ConnectionLostException, InterruptedException{
+	public void placeCube(int level) throws ConnectionLostException, InterruptedException, NanExeption{
 		this.moveArmToPutCube(get_distance(), level * RobotSettings.cubeSize, SHOLDER_FIRST);
 		this.releaseCube();
 		this.bringArmUp();

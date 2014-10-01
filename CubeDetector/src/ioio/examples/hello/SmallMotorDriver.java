@@ -13,7 +13,7 @@ import ioio.lib.api.exception.ConnectionLostException;
  * @author Doron
  */
 
-public class SmallMotorDriver implements  Stoppable{
+public class SmallMotorDriver implements  Stoppable {
 	private DigitalOutput A01, A02, B01, B02;
 	
 	/**
