@@ -251,8 +251,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 			SmallMotorDriver wrist_and_grasp = new SmallMotorDriver(ioio_, RobotSettings.WRIST_A01_PIN, RobotSettings.WRIST_A02_PIN, RobotSettings.GRASP_B01_PIN, RobotSettings.GRASP_B02_PIN);
 			_arm = new RoboticArmEdge(ioio_, wrist_and_grasp, sholder_and_elbow, turn_and_led, RobotSettings.ARM_STBY, RobotSettings.ARM_PWM);
 			_movmentModule = new MovmentSystem(ioio_, _chasiss, _arm, RobotSettings.WRIST_POT_PIN, RobotSettings.SHOLDER_POT_PIN, RobotSettings.ELBOW_POT_PIN, RobotSettings.DISTANCE_PIN);
-			_execution.set_movmentSystem(_movmentModule);
-			
+			_execution.set_movmentSystem(_movmentModule);	
 		}
 		
 		public void loop() throws ConnectionLostException {

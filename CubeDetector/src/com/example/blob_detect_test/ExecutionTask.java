@@ -77,14 +77,14 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		
 		try {
 //			_movmentSystem.setRoverSpeed((float)moveSpeed);
-			_movmentSystem.releaseCube();
+//			_movmentSystem.releaseCube();
 			_movmentSystem.moveSholder(45);
 			_movmentSystem.moveElbow(45);
 			
 			
 			//grabbing first cube
-			_movmentSystem.moveArmToPutCube(15, 2, _movmentSystem.SHOLDER_FIRST);
-			_movmentSystem.grabCube();
+			_movmentSystem.moveArmToPutCube(13, 1, _movmentSystem.SHOLDER_FIRST);
+//			_movmentSystem.grabCube();
 
 //			Thread.sleep((long)(RobotSettings.clawTime * 1000));			
 //			_movmentSystem.moveSholder(45);
@@ -368,5 +368,9 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		//delegate.processFinish("test");
 		//(TextView)findViewById(R.id.RobotDirection)
 		//setProgressPercent(progress[0]);
+	}
+	
+	public void set_movmentSystem(MovmentSystem _movmentSystem) {
+		this._movmentSystem = _movmentSystem;
 	}
 }
