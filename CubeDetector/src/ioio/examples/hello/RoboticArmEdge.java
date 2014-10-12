@@ -10,11 +10,11 @@ import ioio.lib.api.exception.ConnectionLostException;
  * @author Doron
  */
 public class RoboticArmEdge implements Stoppable{
-	private SmallMotorDriver _wrist_and_grasp;
-	private SmallMotorDriver _sholder_and_elbow;
-	private SmallMotorDriver _turn_and_led;
-	private DigitalOutput _stby;
-	private PwmOutput _pwm;
+	protected SmallMotorDriver _wrist_and_grasp;
+	protected SmallMotorDriver _sholder_and_elbow;
+	protected SmallMotorDriver _turn_and_led;
+	protected DigitalOutput _stby;
+	protected PwmOutput _pwm;
 
 	/**
 	 * this constructor takes the instances of the SmallMotorDriver controlling the arms wrist, grasp, sholder, elbow, arm turn and led.
@@ -194,6 +194,7 @@ public class RoboticArmEdge implements Stoppable{
 		_wrist_and_grasp.stop();
 		_sholder_and_elbow.stop();
 	}
+	
 	
 	/**
 	 * closes all pins

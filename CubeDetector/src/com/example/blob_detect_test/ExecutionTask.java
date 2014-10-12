@@ -1,6 +1,7 @@
 package com.example.blob_detect_test;
 
 import ioio.examples.hello.MovmentSystem;
+import ioio.examples.hello.RobotSettings;
 import ioio.lib.api.exception.ConnectionLostException;
 import java.net.URL;
 import android.os.AsyncTask;
@@ -78,9 +79,42 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		this.gotoBase = false;
 		
 		try {
-			_movmentSystem.setRoverSpeed((float)moveSpeed);
-//			_movmentSystem.moveSholder(80);
+//			_movmentSystem.setRoverSpeed((float)moveSpeed);
+//			_movmentSystem.releaseCube();
+			_movmentSystem.moveSholder(45);
+			_movmentSystem.moveElbow(45);
 			
+			
+			//grabbing first cube
+			_movmentSystem.moveArmToPutCube(13, 1, _movmentSystem.SHOLDER_FIRST);
+//			_movmentSystem.grabCube();
+
+//			Thread.sleep((long)(RobotSettings.clawTime * 1000));			
+//			_movmentSystem.moveSholder(45);
+//			_movmentSystem.moveElbow(45);
+//
+//			_movmentSystem.moveArmToPutCube(15,1, _movmentSystem.SHOLDER_FIRST);
+//			_movmentSystem.releaseCube();
+//			Thread.sleep((long)(RobotSettings.clawTime * 1000));
+////			
+//			_movmentSystem.moveSholder(45);
+//			_movmentSystem.moveElbow(45);
+//
+//			_movmentSystem.moveArmToPutCube(10,1, _movmentSystem.ELBOW_FIRST);
+//			_movmentSystem.grabCube();
+//			Thread.sleep((long)(RobotSettings.clawTime * 1000));
+////
+//			_movmentSystem.moveElbow(20);
+//			_movmentSystem.moveSholder(45);
+//			
+////
+//			_movmentSystem.moveArmToPutCube(15,2, _movmentSystem.ELBOW_FIRST);
+//			_movmentSystem.releaseCube();
+//			Thread.sleep((long)(RobotSettings.clawTime * 1000));			
+//			_movmentSystem.moveSholder(45);
+//			_movmentSystem.moveElbow(45);
+//			
+			//			_movmentSystem.bringArmUp();
 			Log.i("", "Algorithm started");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -90,50 +124,53 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		Log.i("", "Starting main loop");
 		
 		this.currColor = 1;
-		for (int i=0; i<1; i++/*this.currColor < this.colorArr.length*/){
-			this.cubeIsCentered = false;
-			this.cubeIsCentered2 = false;
-			if (isCancelled()){
-				Log.i("", "Task stopped");
-				try {
-					robotMove(STOP);
-				} catch (ConnectionLostException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				break;
-			}
-			
-			if (this.gotoBase){
-				CubeInfo.getInstance().setColor(this.colorArr[0]);
-				Log.i("Color change", "Color index is now: " + 0);
-				this.gotoBase = false;
-				currColor++;
-			} else {
-				CubeInfo.getInstance().setColor(this.colorArr[currColor]);
-				Log.i("Color change", "Color index is now: " + String.valueOf(currColor));
-				this.gotoBase = true;
-			}
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			
-			try {
-				this.magicalAlgorithm();
-			} catch (ConnectionLostException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
+		
+//		for (int i=0; i<1; i++/*this.currColor < this.colorArr.length*/){
+//			this.cubeIsCentered = false;
+//			this.cubeIsCentered2 = false;
+//			if (isCancelled()){
+//				Log.i("", "Task stopped");
+//				try {
+//					robotMove(STOP);
+//				} catch (ConnectionLostException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				break;
+//			}
+//			
+//			if (this.gotoBase){
+//				CubeInfo.getInstance().setColor(this.colorArr[0]);
+//				Log.i("Color change", "Color index is now: " + 0);
+//				this.gotoBase = false;
+//				currColor++;
+//			} else {
+//				CubeInfo.getInstance().setColor(this.colorArr[currColor]);
+//				Log.i("Color change", "Color index is now: " + String.valueOf(currColor));
+//				this.gotoBase = true;
+//			}
+//			try {
+//				Thread.sleep(500);
+//			} catch (InterruptedException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//			
+//			try {
+//				this.magicalAlgorithm();
+//			} catch (ConnectionLostException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			} catch (InterruptedException e1) {
+//				// TODO Auto-generated catch block
+//				e1.printStackTrace();
+//			}
+//		}
+		
+		
 		return null;
 	}
 	
@@ -206,7 +243,12 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				break;
 			case(TAKE):
 				this.robotMove(STOP);
-				this._movmentSystem.takeCube();
+				try {
+					this._movmentSystem.takeCube();
+				} catch (NanExeption e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				Thread.sleep(20000);
 				this.robotMove(STOP);
 				break;
@@ -335,5 +377,4 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	public void set_movmentSystem(MovmentSystem _movmentSystem) {
 		this._movmentSystem = _movmentSystem;
 	}
-
 }
