@@ -43,12 +43,15 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	private final static int BACK = 5;
 	private final static int STOP = 0;
 	private final static int TAKE = 6;
+	private final static int RIGHT_VERY_SLOW = 8;
+	
 	
 	private final static int SEARCH = 1;
 	private final static int CENTER_LEFT = 2;
 	private final static int CENTER_RIGHT = 3;
-	private final static int GOTO_CAMERA = 4;
-	private final static int GOTO_SENSOR = 5;
+	private final static int CENTER_RIGHT_SLOW = 7;
+	private final static int GOTO_BY_CAMERA = 4;
+	private final static int GOTO_BY_SENSOR = 5;
 	
 	private final static int DONE = 6;
 	
@@ -163,7 +166,6 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			case(MOVE_SLOW):
 				Log.i("", "Issued move command");
 				_movmentSystem.setRoverSpeed((float)moveSpeed);
-				
 				this._movmentSystem.moveForwardCont();
 				Thread.sleep(100);
 				this.robotMove(STOP);
@@ -183,6 +185,13 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				this.robotMove(STOP);
 				Thread.sleep(100);
 				break;
+			case(RIGHT_VERY_SLOW):
+				Log.i("", "Issued turn right slow command");	
+				this._movmentSystem.turnRight();
+				Thread.sleep(500);
+				this.robotMove(STOP);
+				Thread.sleep(500);
+				break;
 			case(LEFT_SLOW):
 				Log.i("", "Issued turn left command");	
 				this._movmentSystem.turnLeft();
@@ -201,7 +210,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				Thread.sleep(20000);
 				this.robotMove(STOP);
 				break;
-			}
+			}	
 		}	
 	}
 
@@ -229,10 +238,13 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				case(CENTER_RIGHT):
 					this.robotMove(RIGHT_SLOW);
 					break;
-				case(GOTO_CAMERA):
+				case(GOTO_BY_CAMERA):
 					this.robotMove(MOVE);
 					break;
-				case(GOTO_SENSOR):
+				case (CENTER_RIGHT_SLOW):
+					this.robotMove(RIGHT_VERY_SLOW);
+					break;
+				case(GOTO_BY_SENSOR):
 					this.robotMove(MOVE_SLOW);
 					break;
 				case(DONE):
@@ -252,17 +264,19 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	private void updateState() throws ConnectionLostException, InterruptedException{
 		double currHorizLoc = CubeInfo.getInstance().getHorizontalLocation();
 		double currDist = CubeInfo.getInstance().getDistance();
-		if (!this.cubeIsCentered && !CubeInfo.getInstance().getFound()){
-			this.setState(SEARCH);
-		} else if (!this.cubeIsCentered && currHorizLoc < -centerLimit){
-			this.setState(CENTER_LEFT);
-		} else if (!this.cubeIsCentered && currHorizLoc > centerLimit){
-			this.setState(CENTER_RIGHT);
-		} else if (!this.cubeIsCentered && currDist > this.distance){
-			this.setState(GOTO_CAMERA);
-		} else {
-			
-			Log.i("GOING TO CUBE", "GOING TO CUBE");
+		if (!this.cubeIsCentered){
+			if (!CubeInfo.getInstance().getFound()){
+				this.setState(SEARCH);
+			} else if (currHorizLoc < -centerLimit){
+				this.setState(CENTER_LEFT);
+			} else if (currHorizLoc > centerLimit){
+				this.setState(CENTER_RIGHT);
+			} else if (currDist > this.distance){
+				this.setState(GOTO_BY_CAMERA);
+			} else {
+				this.cubeIsCentered = true;
+			}
+		} else { //Cube is centered by camera. Now moving using the distance sensor
 			try {
 				Log.i("IMPORTANT Sensor distance","Sensor distance: " + String.valueOf(_movmentSystem.get_distance()));
 			} catch (InterruptedException e) {
@@ -271,24 +285,14 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			}
 			Log.i("IMPORTANT Camera distance","Camera distance: " + String.valueOf(CubeInfo.getInstance().getDistance()));
 			Log.i("IMPORTANT Cube location", "Center location: " + String.valueOf(CubeInfo.getInstance().getHorizontalLocation()));
-			
-			this.cubeIsCentered = true;
-			if (!this.cubeIsCentered2 && currHorizLoc < -centerLimit+this.center){
-				this.setState(CENTER_LEFT);
-			} else if (!this.cubeIsCentered2 && currHorizLoc > centerLimit+this.center){
-				this.setState(CENTER_RIGHT);
-			} else if (!this.cubeIsCentered2 && this._movmentSystem.get_distance()<0.3){
-				this.setState(CENTER_LEFT);
+			if (this._movmentSystem.get_distance()<0.2){
+				this.setState(CENTER_RIGHT_SLOW);
+			} else if (this._movmentSystem.get_distance()<0.52){
+				this.setState(GOTO_BY_SENSOR);
 			} else {
-				this.cubeIsCentered2 = true;
-				if (this._movmentSystem.get_distance()<0.52){
-					this.setState(GOTO_SENSOR);
-				} else {
-					this.setState(DONE);
-				}
-			}
-			
-				
+				this.setState(DONE);
+				this.cubeIsCentered = false;
+			}				
 		}
 	}
 	

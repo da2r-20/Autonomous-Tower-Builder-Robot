@@ -10,11 +10,11 @@ public enum Color {
 	
 	
 	//YELLOW (new Scalar(16,77,34), new Scalar(64,210,255)),
-	YELLOW (new Scalar(21,0,0), new Scalar(49,255,255)),
+	//YELLOW (new Scalar(21,0,0), new Scalar(49,255,255)),
 	
 	//afternoon values
-	GREEN (new Scalar(66,105,29), new Scalar(100,255,255)),
-	BLUE (new Scalar(93,115,0), new Scalar(147,255,255));
+	//GREEN (new Scalar(66,105,29), new Scalar(100,255,255)),
+	//BLUE (new Scalar(93,115,0), new Scalar(147,255,255));
 	
 	//evening values
 	//GREEN (new Scalar(73,128,0), new Scalar(91,229,225)),
@@ -23,6 +23,12 @@ public enum Color {
 	//Morning values
 	//GREEN (new Scalar(69,120,22), new Scalar(88,255,255)),
 	//BLUE (new Scalar(102,114,0), new Scalar(136,255,255));
+	
+	//Colors Pavel's flat:
+	BLUE (new Scalar(86,79,0), new Scalar(118,255,255)),
+	GREEN (new Scalar(48,111,0), new Scalar(95,255,255)),
+	YELLOW (new Scalar(0,75,0), new Scalar(80,255,255));
+	
 	
 	public final Scalar hsvMin;
 	public final Scalar hsvMax;
