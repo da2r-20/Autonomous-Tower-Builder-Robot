@@ -1,5 +1,7 @@
 package com.example.blob_detect_test;
 
+import ioio.lib.api.exception.ConnectionLostException;
+
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -11,8 +13,17 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+
+/**
+ * An Adapter object acts as a bridge between an AdapterView and the underlying data
+ * for that view (the dropped down list in our case) . The Adapter provides access to the data items. 
+ * The Adapter is also responsible for making a View for each item in the data set.
+ */
 public class Adapter {
+//listener that receives events when one of seekbars change by a user.
 private SeekBarListener mListener;
+
+//The HSV values of the sliders of the action bar dropdown list
 private TextView sliderValues[] = new TextView[6];
 
 public interface SeekBarListener{
@@ -31,6 +42,10 @@ public void setSeekBarListener(SeekBarListener listener){
     mListener = listener;
 }
 
+/**
+ * The list adapter class is responsible for managing the dropdown view of the action bar.
+ * It holds the six HSV seekbars (sliders).
+ */
 public class listAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private onSeekbarChange mSeekListener;
@@ -63,7 +78,12 @@ public class listAdapter extends BaseAdapter {
         return 0;
     }
 
-    @Override
+    /**
+	 * this method returns the view of the action bar layout (when it is not "dropped down")
+	 * @param position
+	 * @param convertView 
+	 * @param parent
+	 */
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder2 holder;
 
@@ -80,7 +100,12 @@ public class listAdapter extends BaseAdapter {
     }
 
 
-    @Override 
+    /**
+	 * this method returns the view of the action bar layout when it is "dropped down"
+	 * @param position
+	 * @param convertView 
+	 * @param parent
+	 */
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
 
@@ -91,6 +116,7 @@ public class listAdapter extends BaseAdapter {
             holder.text_slider_value = (TextView)convertView.findViewById(R.id.textView2);
             holder.seekbar = (SeekBar)convertView.findViewById(R.id.seekBar1);
             if (position > 2){
+            	//init the seekbar position
             	holder.seekbar.setProgress(255);
             }
             convertView.setTag(R.layout.baseadapter_dropdown_layout, holder);
@@ -107,24 +133,30 @@ public class listAdapter extends BaseAdapter {
 
 }
 
+//ViewHolder (holds elements of view) of dropdown list
 static class ViewHolder {
     TextView text;
     TextView text_slider_value;
     SeekBar seekbar;
 }
 
+//ViewHolder of actionbar (when it is not in dropdown mode)
 static class ViewHolder2 {
     TextView text_title;
 }
 
-
+/**
+ * This class is responsible for managing the update (by user touch) of the seekbars in the action bar dropdown list.
+ */
 public class onSeekbarChange implements OnSeekBarChangeListener{
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         int position = (Integer) seekBar.getTag();
         if(mListener != null){
+        	//update the textual value of the slider
         	sliderValues[position].setText(Integer.toString(progress));
+        	//update the mListener, which will update the view and allow access to the HSV values for the Image Recognition Algo
             mListener.onProgressChanged(seekBar, progress, fromUser, position);
         }
     }
