@@ -23,10 +23,10 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	
 	//Horizontal center threshold (from -center to +center)
 	private int centerLimit = 30;
-	private int center = 270;
+	private int center =  230; //210;
 	
 	//Stopping "distance" from the cube (roughly corresponds to cm, but not really)
-	private double distance = 13;
+	private double distance = 11;
 	
 	//Robot speed values
 	private double moveSpeed = 0.6;
@@ -53,6 +53,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	private final static int CENTER_RIGHT_SLOW = 7;
 	private final static int GOTO_BY_CAMERA = 4;
 	private final static int GOTO_BY_SENSOR = 5;
+	private final static int NOTHING = 8;
 	
 	private final static int DONE = 6;
 	
@@ -79,14 +80,17 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		this.gotoBase = false;
 		
 		try {
-//			_movmentSystem.setRoverSpeed((float)moveSpeed);
+			_movmentSystem.setRoverSpeed((float)moveSpeed);
 //			_movmentSystem.releaseCube();
-			_movmentSystem.moveSholder(45);
-			_movmentSystem.moveElbow(45);
+			//_movmentSystem.moveSholder(45);
+			//_movmentSystem.moveElbow(45);
 			
 			
 			//grabbing first cube
-			_movmentSystem.moveArmToPutCube(13, 1, _movmentSystem.SHOLDER_FIRST);
+			//_movmentSystem.moveArmToPutCube(13, 1, _movmentSystem.SHOLDER_FIRST);
+			//while (true){
+				
+		//	}
 //			_movmentSystem.grabCube();
 
 //			Thread.sleep((long)(RobotSettings.clawTime * 1000));			
@@ -115,7 +119,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 //			_movmentSystem.moveElbow(45);
 //			
 			//			_movmentSystem.bringArmUp();
-			Log.i("", "Algorithm started");
+//			Log.i("", "Algorithm started");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -125,50 +129,50 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		
 		this.currColor = 1;
 		
-//		for (int i=0; i<1; i++/*this.currColor < this.colorArr.length*/){
-//			this.cubeIsCentered = false;
-//			this.cubeIsCentered2 = false;
-//			if (isCancelled()){
-//				Log.i("", "Task stopped");
-//				try {
-//					robotMove(STOP);
-//				} catch (ConnectionLostException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				break;
-//			}
-//			
-//			if (this.gotoBase){
-//				CubeInfo.getInstance().setColor(this.colorArr[0]);
-//				Log.i("Color change", "Color index is now: " + 0);
-//				this.gotoBase = false;
-//				currColor++;
-//			} else {
-//				CubeInfo.getInstance().setColor(this.colorArr[currColor]);
-//				Log.i("Color change", "Color index is now: " + String.valueOf(currColor));
-//				this.gotoBase = true;
-//			}
-//			try {
-//				Thread.sleep(500);
-//			} catch (InterruptedException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//			
-//			try {
-//				this.magicalAlgorithm();
-//			} catch (ConnectionLostException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			} catch (InterruptedException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//		}
+		for (int i=0; i<1; i++/*this.currColor < this.colorArr.length*/){
+			this.cubeIsCentered = false;
+			this.cubeIsCentered2 = false;
+			if (isCancelled()){
+				Log.i("", "Task stopped");
+				try {
+					robotMove(STOP);
+				} catch (ConnectionLostException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				break;
+			}
+			
+			if (this.gotoBase){
+				CubeInfo.getInstance().setColor(this.colorArr[0]);
+				Log.i("Color change", "Color index is now: " + 0);
+				this.gotoBase = false;
+				currColor++;
+			} else {
+				CubeInfo.getInstance().setColor(this.colorArr[currColor]);
+				Log.i("Color change", "Color index is now: " + String.valueOf(currColor));
+				this.gotoBase = true;
+			}
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			try {
+				this.magicalAlgorithm();
+			} catch (ConnectionLostException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 		
 		
 		return null;
@@ -206,7 +210,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				this._movmentSystem.moveForwardCont();
 				Thread.sleep(100);
 				this.robotMove(STOP);
-				Thread.sleep(2000);
+				Thread.sleep(1000);
 				break;
 			case(RIGHT_FAST):				
 				Log.i("", "Issued turn right command");	
@@ -244,7 +248,8 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			case(TAKE):
 				this.robotMove(STOP);
 				try {
-					this._movmentSystem.takeCube();
+					//_movmentSystem.moveArmToPutCube(13, 1, MovmentSystem.SHOLDER_FIRST);
+					_movmentSystem.takeCube();
 				} catch (NanExeption e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -268,7 +273,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				this.robotMove(STOP);
 				break;
 			}
-			
+			CubeInfo.getInstance().updateSensorDistanceAvg(_movmentSystem.get_distance());
 			this.updateState();
 			switch (this.state){
 				case(SEARCH):
@@ -289,6 +294,8 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				case(GOTO_BY_SENSOR):
 					this.robotMove(MOVE_SLOW);
 					break;
+				case(NOTHING):
+					break;
 				case(DONE):
 					//this.robotMove(STOP);
 					//this.robotMove(BACK);
@@ -306,32 +313,34 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	private void updateState() throws ConnectionLostException, InterruptedException{
 		double currHorizLoc = CubeInfo.getInstance().getHorizontalLocation();
 		double currDist = CubeInfo.getInstance().getDistance();
+		
 		if (!this.cubeIsCentered){
+			Log.i("IMPORTANT Camera distance","Status - Camera distance: " + String.valueOf(CubeInfo.getInstance().getDistance()));
 			if (!CubeInfo.getInstance().getFound()){
 				this.setState(SEARCH);
-			} else if (currHorizLoc < -centerLimit){
+			} else if (currHorizLoc < center-centerLimit){
 				this.setState(CENTER_LEFT);
-			} else if (currHorizLoc > centerLimit){
+			} else if (currHorizLoc > center+centerLimit){
 				this.setState(CENTER_RIGHT);
 			} else if (currDist > this.distance){
 				this.setState(GOTO_BY_CAMERA);
 			} else {
+				this.setState(NOTHING);
+				Log.i("State update", "Status - Switching to 'NOTHING' with camera distance reading of " + String.valueOf(currDist));
 				this.cubeIsCentered = true;
 			}
 		} else { //Cube is centered by camera. Now moving using the distance sensor
-			try {
-				Log.i("IMPORTANT Sensor distance","Sensor distance: " + String.valueOf(_movmentSystem.get_distance()));
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			Log.i("IMPORTANT Camera distance","Camera distance: " + String.valueOf(CubeInfo.getInstance().getDistance()));
+			double sensDist = CubeInfo.getInstance().getSensorDistanceAvg();
+			Log.i("IMPORTANT Sensor distance","Status - Sensor distance: " + String.valueOf(sensDist));
+			Log.i("IMPORTANT Camera distance","Status - Camera distance: " + String.valueOf(CubeInfo.getInstance().getDistance()));
 			Log.i("IMPORTANT Cube location", "Center location: " + String.valueOf(CubeInfo.getInstance().getHorizontalLocation()));
-			if (this._movmentSystem.get_distance()<0.2){
-				this.setState(CENTER_RIGHT_SLOW);
-			} else if (this._movmentSystem.get_distance()<0.52){
+//			if (this._movmentSystem.get_distance()<0.3){
+//				this.setState(CENTER_RIGHT_SLOW);
+			
+			if (sensDist > 0.52 || sensDist < 0.49){
 				this.setState(GOTO_BY_SENSOR);
 			} else {
+				Log.i("State update", "Status - Switching to 'DONE' with sensor distance reading of " + String.valueOf(sensDist));
 				this.setState(DONE);
 				this.cubeIsCentered = false;
 			}				
