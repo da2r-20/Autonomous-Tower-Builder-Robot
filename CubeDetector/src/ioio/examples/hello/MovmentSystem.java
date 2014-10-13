@@ -419,8 +419,8 @@ public class MovmentSystem implements Stoppable{
 	 * @throws NanExeption 
 	 */
 	public void takeCube() throws ConnectionLostException, InterruptedException, NanExeption{
-		
-		this.moveArm(15/*this.getDistanceCentimeters()*/);
+		//this.moveArm(15/*this.getDistanceCentimeters()*/);
+		this.moveArmToPutCube(13, 1, this.SHOLDER_FIRST);
 		this.grabCube();
 		Thread.sleep((long)(RobotSettings.clawTime * 1000));
 		this.bringArmUp();
