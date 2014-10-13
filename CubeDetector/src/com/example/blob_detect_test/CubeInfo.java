@@ -7,6 +7,7 @@ public class CubeInfo {
 	private double distance;
 	private Color color;
 	private boolean found;
+	private MovingAvg sensDistAvg = new MovingAvg(10);
 	
 	
 	protected CubeInfo(){
@@ -21,6 +22,10 @@ public class CubeInfo {
 	
 	public void setDistance(double dist){
 		this.distance = dist;
+	}
+	
+	public void updateSensorDistanceAvg(double dist){
+		this.sensDistAvg.update(dist);
 	}
 	
 	public void setColor(Color color){
@@ -41,6 +46,10 @@ public class CubeInfo {
 	
 	public double getDistance(){
 		return this.distance;
+	}
+	
+	public double getSensorDistanceAvg(){
+		return this.sensDistAvg.getAvg();
 	}
 	
 	public Color getColor(){
