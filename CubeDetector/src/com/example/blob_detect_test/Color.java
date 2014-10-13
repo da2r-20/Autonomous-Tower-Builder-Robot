@@ -25,9 +25,15 @@ public enum Color {
 	//BLUE (new Scalar(102,114,0), new Scalar(136,255,255));
 	
 	//Colors Pavel's flat:
-	BLUE (new Scalar(86,79,0), new Scalar(118,255,255)),
-	GREEN (new Scalar(48,111,0), new Scalar(95,255,255)),
-	YELLOW (new Scalar(0,75,0), new Scalar(80,255,255));
+//	BLUE (new Scalar(86,79,0), new Scalar(118,255,255)),
+//	GREEN (new Scalar(48,111,0), new Scalar(95,255,255)),
+//	YELLOW (new Scalar(0,75,0), new Scalar(80,255,255));
+	
+	//Colors Pavel's flat evening:
+	BLUE (new Scalar(77,18,0), new Scalar(132,255,255)),
+	GREEN (new Scalar(31,18,0), new Scalar(95,255,255)),
+	YELLOW (new Scalar(6,77,0), new Scalar(42,255,255));
+	
 	
 	
 	public final Scalar hsvMin;
