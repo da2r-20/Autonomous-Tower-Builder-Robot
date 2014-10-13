@@ -51,7 +51,6 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	
 	//The displayed image type
 	private int imgType = HSV;
-
 	
 	//main execution AsyncTask
 	private ExecutionTask _execution;
@@ -211,7 +210,27 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		} else if (imgType == HSV){
 			frame = imgController.getThreshed();
 		}
+		
 		//robotDirections = (TextView)findViewById(R.id.RobotDirection);
+		try {
+			CubeInfo.getInstance().updateSensorDistanceAvg(_movmentModule.get_distance());
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ConnectionLostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (NullPointerException e1){
+			e1.printStackTrace();
+		}
+		try {
+			Log.i("IMPORTANT Sensor distance","Calibration Sensor distance: " + String.valueOf(CubeInfo.getInstance().getSensorDistanceAvg()));
+		} catch (NullPointerException e){
+			e.printStackTrace();
+		}
+		Log.i("IMPORTANT Camera distance","Calibration Camera distance: " + String.valueOf(CubeInfo.getInstance().getDistance()));
+		Log.i("IMPORTANT Cube location", "Calibration Center location: " + String.valueOf(CubeInfo.getInstance().getHorizontalLocation()));
+		
 		return frame;
 	}
 
