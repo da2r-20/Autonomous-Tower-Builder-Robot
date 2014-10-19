@@ -30,10 +30,21 @@ public enum Color {
 //	YELLOW (new Scalar(0,75,0), new Scalar(80,255,255));
 	
 	//Colors Pavel's flat evening:
-	BLUE (new Scalar(77,18,0), new Scalar(132,255,255)),
-	GREEN (new Scalar(31,18,0), new Scalar(95,255,255)),
-	YELLOW (new Scalar(6,77,0), new Scalar(42,255,255));
+//	BLUE (new Scalar(77,18,0), new Scalar(132,255,255)),
+//	GREEN (new Scalar(31,18,0), new Scalar(95,255,255)),
+//	YELLOW (new Scalar(6,77,0), new Scalar(42,255,255));
 	
+	
+	//Colors 34 Lab noon
+	/*
+	BLUE (new Scalar(90,63,0), new Scalar(255,255,255)),
+	GREEN (new Scalar(37,54,0), new Scalar(87,255,255)),
+	YELLOW (new Scalar(18,72,0), new Scalar(44,255,255));*/
+	
+	GREEN (new Scalar(45,98,0), new Scalar(94,255,255)),
+	BLUE (new Scalar(95,0,0), new Scalar(149,255,255)),
+	YELLOW (new Scalar(13,46,0), new Scalar(54,255,255)),
+	LINE_COLOR (new Scalar(0,0,0), new Scalar(255,255,70));
 	
 	
 	public final Scalar hsvMin;
