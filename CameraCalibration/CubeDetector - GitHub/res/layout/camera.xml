@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+	
+    <LinearLayout 
+	    android:id="@+id/LinearLayout02" 
+	    android:layout_height="wrap_content" 
+	    android:layout_width="fill_parent" >
+	    
+	    <ToggleButton
+	        android:id="@+id/toggleButton1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="right"
+	        android:onClick="onToggleClicked1"
+	        android:text="ToggleButton1"
+	        android:textOff="Start"
+	        android:textOn="Stop" />
+    
+	    <ToggleButton
+	        android:id="@+id/toggleButton2"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="right"
+	        android:onClick="onToggleClicked2"
+	        android:text="ToggleButton2"
+	        android:textOff="Threshed"
+	        android:textOn="Normal" />
+	</LinearLayout>
+    
+    
+    
+ <org.opencv.android.NativeCameraView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:id="@+id/camera_main_view" />
+    
+    <TextView
+        android:id="@+id/RobotDirection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+		android:layout_gravity="center"
+        android:text="@string/RobotDirection" />    
+
+</LinearLayout>
