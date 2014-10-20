@@ -6,6 +6,8 @@ import ioio.lib.util.IOIOLooper;
 import ioio.lib.util.android.IOIOActivity;
 import java.util.ArrayList;
 
+import magical.robot.global.Color;
+import magical.robot.global.CubeInfo;
 import magical.robot.ioio.BigMotorDriver;
 import magical.robot.ioio.ChassisFrame;
 import magical.robot.ioio.MovmentSystem;
@@ -46,8 +48,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	private TextView robotDirections;
 
 	//GUI fields
-//	private ToggleButton _startStop;
-
+	
 	//robot modules
 	private ChassisFrame _chasiss;
 	private RoboticArmEdge _arm;
@@ -62,7 +63,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	private Color[] colorArr = {Color.GREEN, Color.YELLOW, Color.BLUE};
 	private int currColor = 0;
 	
-	private boolean follow = false;
+	private boolean lineTracking = false;
 
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
@@ -70,7 +71,6 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 			switch (status) {
 			case LoaderCallbackInterface.SUCCESS:
 			{
-				//Log.i("OpenCV loaded successfully");
 				imgController = new ImgController();
 				mOpenCvCameraView.enableView();
 			} break;
@@ -89,19 +89,23 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.camera);
-//		_startStop = (ToggleButton) findViewById(R.id.toggleButton1);
+
 		mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.camera_main_view);
-		//mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 		mOpenCvCameraView.setCvCameraViewListener(this);
 		
+		this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule, colorArr, lineTracking);
 		
-		
-		this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule, colorArr, follow);
 		//init cube info
-		CubeInfo.getInstance().setColor(Color.LINE_COLOR);
-		
-		//init execution task
-		//this.execution = new ExecutionTask(this);
+		if (lineTracking){
+			CubeInfo.getInstance().setColor(Color.LINE_COLOR);
+			CubeInfo.getInstance().setExtent(0.1, 5);
+			CubeInfo.getInstance().setAspectRatio(0.1, 5);
+		} else {
+			CubeInfo.getInstance().setColor(colorArr[1]);
+			CubeInfo.getInstance().setExtent(0.5,1.5);
+			CubeInfo.getInstance().setAspectRatio(0.5, 1.5);
+		}
+
 		
 		//init reference to buttom TextView
 		robotDirections = (TextView)findViewById(R.id.RobotDirection);
@@ -125,7 +129,6 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		adapter.setSeekBarListener( new SeekBarListener(){
 
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser, int positionInList) {
-				//Log.i("", "onProgressChanged " + progress + " position in list" + positionInList);
 				ImgController.setThresh(positionInList, progress);
 			}
 
@@ -151,38 +154,19 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		
 		if (on){
 			Log.i("", "Algorithm started");
-			/*
-			Handler handler = new Handler();
-			Runnable r=new Runnable()
-			{
-			    public void run() 
-			    {
-			        try {
-			        	System.out.println(_movmentModule);
-			        	_movmentModule.grabCube();
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} 
-			    }
-			};
-			handler.postAtFrontOfQueue(r);
-			*/
 			CubeInfo.getInstance().setColor(Color.YELLOW);
 			_execution.execute();
-			
-			//execution.execute();
-			//_movmentModule.setRoverSpeed(100);
-			//_movmentModule.moveArm(15);
 		} else{
 			Log.i("", "Algorithm stopped");
 			_execution.cancel(true);
-			//Color[] colorArr = {Color.YELLOW, Color.YELLOW, Color.YELLOW};
-			this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule, colorArr, follow);
-			//_movmentModule.stop();
+			this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule, colorArr, lineTracking);
 		}
 	}
 	
+	/**
+	 * Toggle between threshold and normal views
+	 * @param view
+	 */
 	public void onToggleClicked2(View view) {
 	    // Is the toggle on?
 	    boolean on = ((ToggleButton) view).isChecked();
@@ -195,10 +179,8 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	    }
 	}
 
-
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -208,11 +190,11 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		Mat frame = inputFrame.rgba();
 		Imgproc.cvtColor(frame, frame, Imgproc.COLOR_RGBA2BGR);
 		
-		//imgController.detectObjects(frame);
-		if (this.follow){
-			imgController.cropStrip(frame);
+		if (this.lineTracking){
+			imgController.lineTrackingCrop(frame);
 		}
 		imgController.processFrame(frame);
+		
 		if (imgType == RGB){
 			frame = imgController.getRGB();
 			Imgproc.cvtColor(frame, frame, Imgproc.COLOR_RGBA2BGR);
@@ -220,14 +202,11 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 			frame = imgController.getThreshed();
 		}
 		
-		//robotDirections = (TextView)findViewById(R.id.RobotDirection);
 		try {
 			CubeInfo.getInstance().updateSensorDistanceAvg(_movmentModule.get_distance());
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (ConnectionLostException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (NullPointerException e1){
 			e1.printStackTrace();
@@ -283,28 +262,9 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		}
 		
 		public void loop() throws ConnectionLostException {
-			/*
-			try {
-				Log.i("Distance", String.valueOf(( _movmentModule.getDistanceCentimeters())));
-				Log.i("Sensor distance",String.valueOf(_movmentModule.get_distance()));
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			Log.i("Camera distance",String.valueOf(CubeInfo.getInstance().getDistance()));
-			Log.i("Cube location", String.valueOf(CubeInfo.getInstance().getHorizontalLocation()));
-			*/
-			//try {
-				
-				//Log.i("Sholder", String.valueOf(( _movmentModule.get_sholderPosition())));
-//				System.out.println(_movmentModule.get_distance());
-			//} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-			//	e.printStackTrace();
-			//}
 		}
 		
-	}//BaseIOIOLooper
+	}
 
 	@Override
 	protected IOIOLooper createIOIOLooper() {

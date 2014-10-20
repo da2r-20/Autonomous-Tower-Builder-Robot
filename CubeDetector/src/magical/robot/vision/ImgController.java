@@ -3,8 +3,9 @@ package magical.robot.vision;
 import java.util.ArrayList;
 import java.util.List;
 
-import magical.robot.main.Color;
-import magical.robot.main.CubeInfo;
+import magical.robot.global.Color;
+import magical.robot.global.CubeInfo;
+import magical.robot.global.ObjectInfoContainer;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -38,49 +39,24 @@ public class ImgController {
 	private Mat lastHSV; //A binary image after color separation, with the block contour drawn on top
 	private Mat lastRGB; //The source RGB image, with the block contour drawn on top
 	private List<MatOfPoint> auxContours = new ArrayList<MatOfPoint>(); //An auxiliary array of contours used for drawing tasks
+	private boolean first = true; //True before the first time time a frame is processed. False afterwards
 	
 	/**
-	 * Constructor.
+	 * Constructor. Initializes a new ImgController.
 	 */
 	public ImgController(){
-		frame = new Frame(720,3);
+		frame = new Frame(720,3, CubeInfo.getInstance().getAspectRatioMin(),  CubeInfo.getInstance().getAspectRatioMax(),
+				 CubeInfo.getInstance().getExtentMin(),  CubeInfo.getInstance().getExtentMax());
 		this.color = null;
 	};
 	
-	public void detectObjects(Mat src){
-		frame.updateFrame(src);
-		Block block = frame.getObjects();
-		if (block != null){
-			double blockHorizontalCenter = block.getCenter().x;
-			Core.circle(src, block.getCenter(), 20, new Scalar(0, 255,0));
-			double centerDiff = blockHorizontalCenter - frame.getWidth();
-			//Log.i("", String.valueOf(centerDiff));
-		}
-	}
 	
-//	private Mat getMat(int matType){
-//		List<MatOfPoint> contours = new ArrayList<MatOfPoint>();
-//		//Block block = frame.getObjects();
-//		contours.clear();
-//		if (this.lastBlock != null){
-//			contours.add(this.lastBlock.getCountour());
-//		}
-//		if (matType == 1){
-//			result = frame.getThreshed();
-//		} else if (matType == 2){
-//			result = frame.getRGB();
-//		}
-//		if (block != null){
-//			if(block!= null){
-//				Imgproc.drawContours(result, contours, 0, new Scalar(0, 255,0),5);
-//			}
-//		}
-//		return result;
-//	}
-	
+	/**
+	 * Processes the @param src image,
+	 * searches for the required object, and updates the cube info (in the info container).
+	 * @param src The source image.
+	 */
 	public void processFrame(Mat src){
-		
-		
 		if (this.color != CubeInfo.getInstance().getColor()){
 			frame.setColor(CubeInfo.getInstance().getColor());
 		}
@@ -98,57 +74,49 @@ public class ImgController {
 			double blockHorizontalCenter = this.lastBlock.getCenter().x;
 			double centerDiff = blockHorizontalCenter - frame.getWidth()/2;
 			double distance = frame.getBlockDistance(this.lastBlock);
-			//Rect boundingBox = Imgproc.boundingRect(block.getCountour());
-			//double contArea  = Imgproc.contourArea(block.getCountour());
-			//double rectArea = boundingBox.width*boundingBox.height;
-			//double extent = contArea/rectArea;
-			//Log.i("", "Extend: " + extent);
-			//MatOfInt hull = new MatOfInt();
-			/*
-			Imgproc.convexHull(block.getCountour(),  hull);
-			MatOfPoint2f hullCont = null;
-			Imgproc.approxPolyDP(hull, hullCont, 0.001, true);
-			//double hullArea = Imgproc.contourArea();
-			double hullArea = Imgproc.contourArea(hull);
-			*/
-			//double solidity = (double) area/hullArea;
-			//Log.i("", "Solidity " + solidity);
-			//update cube info
 			CubeInfo.getInstance().setHorizontalLocation(centerDiff);
 			CubeInfo.getInstance().setDistance(distance);
 		} else {
 			CubeInfo.getInstance().setFound(false);
 		}
-		
-		
 	}
 	
+	/**
+	 * Get a thresholded binary image with the detected object shown as a contour on top of it.
+	 * @return
+	 */
 	public Mat getThreshed(){
 		return this.lastHSV;
 	}
 	
+	/**
+	 * Get a the source RGB image with the detected object shown as a contour on top of it.
+	 * @return
+	 */
 	public Mat getRGB(){
 		return this.lastRGB;
 		
 	}
 	
+	/**
+	 * Update color threshold values
+	 * @param positionInList
+	 * @param progress
+	 */
 	public static void setThresh(int positionInList, int progress){
 		frame.setThresh(positionInList, progress);
 	}
 	
-	public void cropStrip(Mat src){
+	
+	/**
+	 * Paints everything white except for a narrow strip at the bottom of the image.
+	 * Used as a pre-processing stage for line tracing.
+	 * @param src The source image
+	 */
+	public void lineTrackingCrop(Mat src){
 		int cols  = src.cols();
 		int rows = src.rows();
-		//Mat dest = new Mat(rows, cols,  src.type());
-		//Mat dest = Mat.zeros(rows, cols, CvType.CV_64F);
-		//Mat mask = src.clone();
-		//Mat mask = Mat.zeros(rows, cols, src.type());
 		Core.rectangle(src, new Point(0, 0), new Point(cols, rows-rows/10), new Scalar(255,255,255), -1);
-		//Core.rectangle(src, new Point(0, rows/2+rows/10), new Point(cols, rows), new Scalar(255,255,255), -1);
-		//Core.rectangle(mask, new Point(0, rows/2), new Point(cols, rows/2+rows/10), new Scalar(255,255,255), -1);
-		//Core.bitwise_and(src, mask, dest);
-		//src.copyTo(dest, mask);
-		//return src;
 	}
 	
 	

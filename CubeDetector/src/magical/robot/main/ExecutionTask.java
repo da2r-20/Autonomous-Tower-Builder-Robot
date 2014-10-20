@@ -3,17 +3,28 @@ package magical.robot.main;
 import ioio.lib.api.exception.ConnectionLostException;
 import java.net.URL;
 
+import magical.robot.global.Color;
+import magical.robot.global.CubeInfo;
 import magical.robot.ioio.MovmentSystem;
 import magical.robot.ioio.RobotSettings;
 import android.os.AsyncTask;
 import android.util.Log;
 
-
+/**
+ * The main control loop is here. 
+ * Should run from a separate thread (via Android AsyncTask).
+ * @author Pavel Rubinson
+ */
 public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	
-	public AsyncResponse delegate = null;
-	private MovmentSystem _movmentSystem;
-	private boolean isMoving = false;
+	//Used for updating the calling UI thread. Currently not in use.
+	public AsyncResponse delegate = null; 
+	
+	//The robot movement module
+	private MovmentSystem _movmentSystem; 
+	
+	//True if some robot movement is currently happening
+	private boolean isMoving = false; 
 	
 	//The array of colors that we are searching for, in the order of their appearance in the tower.
 	//First member is the base cube.
@@ -37,7 +48,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	//True if we are going to the base cube. False otherwise. 
 	private boolean gotoBase;
 	
-	private boolean follow;
+	private boolean lineTracking;
 	
 	//Values to pass to the robotMove method
 	private final static int STOP = 0;
@@ -52,6 +63,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	private final static int TAKE = 6;
 	private final static int PUT = 9;
 	
+	//State values (possible robot states/behaviors)
 	private final static int SEARCH = 1;
 	private final static int CENTER_LEFT = 2;
 	private final static int CENTER_RIGHT = 3;
@@ -63,19 +75,28 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	private final static int NOTHING = 8;
 	private final static int GOTO_BY_SENSOR_BACK = 9;
 	
-	private boolean cubeIsCentered = false;
-	private boolean cubeIsCentered2 = false;
+	//True when navigating by camera. False when switching to proximity sensor.
+	private boolean byCamera = true;
 	
-	private int state = SEARCH;
+	//The current state of the robot
+	private int currState;
 	
-	ExecutionTask(AsyncResponse delegate, MovmentSystem movmentSystem, Color[] colorArr, boolean follow){
+	/**
+	 * 
+	 * @param delegate An interface for updating a text view in the UI thread
+	 * @param movmentSystem THe robot movement system/module
+	 * @param colorArr The array of colors for the tower (first color = the base cube)
+	 * @param lineTracking True if we want line tracking instead of tower building
+	 */ 
+	ExecutionTask(AsyncResponse delegate, MovmentSystem movmentSystem, Color[] colorArr, boolean lineTracking){
 		this.delegate = delegate;
 		_movmentSystem = movmentSystem;
 		this.colorArr = colorArr;
 		this.currColor = 1;
 		this.gotoBase = false;
-		this.follow = follow;
-		if (follow){
+		this.lineTracking = lineTracking;
+		this.currState = SEARCH;
+		if (lineTracking){
 			this.moveSpeed = 0.8;
 			this.distance = 0;
 			this.centerLimit = 50;
@@ -99,77 +120,31 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			_movmentSystem.setRoverSpeed((float)moveSpeed);
 			_movmentSystem.initArm();
 			Thread.sleep(2000);
-			//_movmentSystem.releaseCube();
-			//_movmentSystem.moveSholder(45);
-			//_movmentSystem.moveElbow(45);
-			
-			
-			//grabbing first cube
-			//_movmentSystem.moveArmToPutCube(13, 1, _movmentSystem.SHOLDER_FIRST);
-			//while (true){
-				
-		//	}
-//			_movmentSystem.grabCube();
-
-//			Thread.sleep((long)(RobotSettings.clawTime * 1000));			
-//			_movmentSystem.moveSholder(45);
-//			_movmentSystem.moveElbow(45);
-//
-//			_movmentSystem.moveArmToPutCube(15,1, _movmentSystem.SHOLDER_FIRST);
-//			_movmentSystem.releaseCube();
-//			Thread.sleep((long)(RobotSettings.clawTime * 1000));
-////			
-//			_movmentSystem.moveSholder(45);
-//			_movmentSystem.moveElbow(45);
-//
-//			_movmentSystem.moveArmToPutCube(10,1, _movmentSystem.ELBOW_FIRST);
-//			_movmentSystem.grabCube();
-//			Thread.sleep((long)(RobotSettings.clawTime * 1000));
-////
-//			_movmentSystem.moveElbow(20);
-//			_movmentSystem.moveSholder(45);
-//			
-////
-//			_movmentSystem.moveArmToPutCube(15,2, _movmentSystem.ELBOW_FIRST);
-//			_movmentSystem.releaseCube();
-//			Thread.sleep((long)(RobotSettings.clawTime * 1000));			
-//			_movmentSystem.moveSholder(45);
-//			_movmentSystem.moveElbow(45);
-//			
-			//			_movmentSystem.bringArmUp();
-//			Log.i("", "Algorithm started");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		Log.i("", "Starting main loop");
 		
-		if (this.follow){
+		if (this.lineTracking){
 			CubeInfo.getInstance().setColor(Color.LINE_COLOR);
 			try {
 				this.magicalAlgorithm(false);
 			} catch (ConnectionLostException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		} else {
 			this.currColor = 1;
-			
-			for (int i=0; i<2; i++/*this.currColor < this.colorArr.length*/){
-				
+			while (this.currColor <= this.colorArr.length){	
 				if (isCancelled()){
 					Log.i("", "Task stopped");
 					try {
 						robotMove(STOP);
 					} catch (ConnectionLostException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					break;
@@ -188,23 +163,19 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e1) {
-					// TODO Auto-generated c6atch block
 					e1.printStackTrace();
 				}
 				
 				try {
+					//Activate the movement algorithm
 					this.magicalAlgorithm(this.gotoBase);
 				} catch (ConnectionLostException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			}
-			
+			}	
 		}
-		
 		
 		return null;
 	}
@@ -289,10 +260,8 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			case(TAKE):
 				this.robotMove(STOP);
 				try {
-					//_movmentSystem.moveArmToPutCube(13, 1, MovmentSystem.SHOLDER_FIRST);
 					_movmentSystem.takeCube();
 				} catch (NanExeption e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				Thread.sleep(2000);
@@ -301,10 +270,8 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			case (PUT):
 				this.robotMove(STOP);
 				try {
-					//_movmentSystem.moveArmToPutCube(13, 1, MovmentSystem.SHOLDER_FIRST);
 					_movmentSystem.placeCube(2);
 				} catch (NanExeption e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				Thread.sleep(5000);
@@ -315,20 +282,20 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	}
 
 	/**
-	 * Main movement algorithm. 
+	 * The main movement algorithm
+	 * @param take Specifies whether we should put the cube or take it. (True to take, false to put)
 	 * @throws ConnectionLostException
 	 * @throws InterruptedException
 	 */
 	private void magicalAlgorithm(boolean take) throws ConnectionLostException, InterruptedException{
-		this.state = SEARCH;
-		while (this.state != DONE){
+		this.currState = SEARCH;
+		while (this.currState != DONE){
 			if (isCancelled()){
 				this.robotMove(STOP);
 				break;
 			}
-			//CubeInfo.getInstance().updateSensorDistanceAvg(_movmentSystem.get_distance());
 			this.updateState();
-			switch (this.state){
+			switch (this.currState){
 				case(SEARCH):
 					this.robotMove(RIGHT_FAST);
 					break;
@@ -356,21 +323,18 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 					this.robotMove(BACK);
 					break;
 				case(DONE):
-					//this.robotMove(STOP);
-					//this.robotMove(BACK);
 					if (take){
 						this.robotMove(TAKE);
 					} else {
 						this.robotMove(PUT);
-					}
-					
+					}	
 					break;
 			}
 		}
 	}
 	
 	/**
-	 * Checks camera data and updates the state of the robot in relation to the cubes.
+	 * Checks camera/sensor data and updates the state of the robot accordingly
 	 * @throws ConnectionLostException
 	 * @throws InterruptedException
 	 */
@@ -378,7 +342,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 		double currHorizLoc = CubeInfo.getInstance().getHorizontalLocation();
 		double currDist = CubeInfo.getInstance().getDistance();
 		
-		if (follow || !this.cubeIsCentered){
+		if (lineTracking || this.byCamera){
 			Log.i("IMPORTANT Camera distance","Status - Camera distance: " + String.valueOf(CubeInfo.getInstance().getDistance()));
 			if (!CubeInfo.getInstance().getFound()){
 				this.setState(SEARCH);
@@ -393,15 +357,13 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			} else {
 				this.setState(NOTHING);
 				Log.i("State update", "Status - Switching to 'NOTHING' with camera distance reading of " + String.valueOf(currDist));
-				this.cubeIsCentered = true;
+				this.byCamera = false;
 			}
 		} else { //Cube is centered by camera. Now moving using the distance sensor
 			double sensDist = CubeInfo.getInstance().getSensorDistanceAvg();
 			Log.i("IMPORTANT Sensor distance","Status - Sensor distance: " + String.valueOf(sensDist));
 			Log.i("IMPORTANT Camera distance","Status - Camera distance: " + String.valueOf(CubeInfo.getInstance().getDistance()));
 			Log.i("IMPORTANT Cube location", "Center location: " + String.valueOf(CubeInfo.getInstance().getHorizontalLocation()));
-//			if (this._movmentSystem.get_distance()<0.3){
-//			this.setState(CENTER_RIGHT_SLOW);	
 			if (sensDist < this.sensorDistance-0.01){
 				this.setState(GOTO_BY_SENSOR_FORW);
 			} else if (sensDist > this.sensorDistance+0.01) {
@@ -409,7 +371,7 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			} else {
 				Log.i("State update", "Status - Switching to 'DONE' with sensor distance reading of " + String.valueOf(sensDist));
 				this.setState(DONE);
-				this.cubeIsCentered = false;
+				this.byCamera = true;
 			}				
 		}
 	}
@@ -421,13 +383,16 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 	 * @throws InterruptedException
 	 */
 	private void setState(int newState) throws ConnectionLostException, InterruptedException{
-		if (this.state != newState){
+		if (this.currState != newState){
 			robotMove(STOP);
-			this.state = newState;
+			this.currState = newState;
 			
 		}
 	}
-
+	
+	/** 
+	 * Used to update the UI thread
+	 */
 	protected void onProgressUpdate(Integer... progress) {
 		switch (progress[0]){
 			case (2): 
@@ -445,11 +410,12 @@ public class ExecutionTask extends  AsyncTask<URL, Integer, Long>{
 			default:
 				break;					
 		}
-		//delegate.processFinish("test");
-		//(TextView)findViewById(R.id.RobotDirection)
-		//setProgressPercent(progress[0]);
 	}
 	
+	/**
+	 * Setter for the movement module
+	 * @param _movmentSystem The robot movement module
+	 */
 	public void set_movmentSystem(MovmentSystem _movmentSystem) {
 		this._movmentSystem = _movmentSystem;
 	}
