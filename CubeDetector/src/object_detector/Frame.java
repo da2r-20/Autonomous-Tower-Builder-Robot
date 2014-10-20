@@ -84,9 +84,10 @@ public class Frame {
 		
 		//Equalize histogram
 		//List<Mat> hsvPlanes = new ArrayList<Mat>();
-		Core.split(this.hsvMat, hsvPlanes);
-		Imgproc.equalizeHist(hsvPlanes.get(2), hsvPlanes.get(2));
-		Core.merge(hsvPlanes, hsvMat);
+		
+		//Core.split(this.hsvMat, hsvPlanes);
+		//Imgproc.equalizeHist(hsvPlanes.get(2), hsvPlanes.get(2));
+		//Core.merge(hsvPlanes, hsvMat);
 		
 		//Filter by HSV range
 		Core.inRange(this.hsvMat, this.hsvMinRange , this.hsvMaxRange, this.hsvThreshed);
@@ -129,7 +130,7 @@ public class Frame {
 			extent = contourArea/(boundingBox.width*boundingBox.height);
 			//Log.i("", "Aspect ratio: " + aspectRatio);
 			//Log.i("", "Extent: " + extent);
-			if (contourArea > maxArea && contourArea > 300 && aspectRatio > 0.5 && aspectRatio < 1.5 && extent > 0.6 && extent < 1.5){
+			if (contourArea > maxArea && contourArea > 100 && aspectRatio > 0.1 && aspectRatio < 5 && extent > 0.1 && extent < 5){
 				maxArea = contourArea;
 				//Log.i("contour area", String.valueOf(maxArea));
 				maxContour = contour;

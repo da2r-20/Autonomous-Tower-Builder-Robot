@@ -57,6 +57,8 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 	
 	private Color[] colorArr = {Color.GREEN, Color.YELLOW, Color.BLUE};
 	private int currColor = 0;
+	
+	private boolean follow = false;
 
 	private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
 		@Override
@@ -90,9 +92,9 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		
 		
 		
-		this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule, colorArr);
+		this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule, colorArr, follow);
 		//init cube info
-		CubeInfo.getInstance().setColor(Color.YELLOW);
+		CubeInfo.getInstance().setColor(Color.LINE_COLOR);
 		
 		//init execution task
 		//this.execution = new ExecutionTask(this);
@@ -172,7 +174,7 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 			Log.i("", "Algorithm stopped");
 			_execution.cancel(true);
 			//Color[] colorArr = {Color.YELLOW, Color.YELLOW, Color.YELLOW};
-			this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule, colorArr);
+			this._execution = (ExecutionTask) new ExecutionTask(this, _movmentModule, colorArr, follow);
 			//_movmentModule.stop();
 		}
 	}
@@ -203,6 +205,9 @@ public class MainActivity extends IOIOActivity   implements OnNavigationListener
 		Imgproc.cvtColor(frame, frame, Imgproc.COLOR_RGBA2BGR);
 		
 		//imgController.detectObjects(frame);
+		if (this.follow){
+			imgController.cropStrip(frame);
+		}
 		imgController.processFrame(frame);
 		if (imgType == RGB){
 			frame = imgController.getRGB();

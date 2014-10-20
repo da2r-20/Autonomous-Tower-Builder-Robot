@@ -200,7 +200,7 @@ public class MovmentSystem implements Stoppable{
 		// cube vertical position
 		cube[0] = 0;
 		// cube height
-		cube[1] = RobotSettings.cubeSize * amountOfCube + RobotSettings.cubeSize/2 + 2.5;
+		cube[1] = RobotSettings.cubeSize * amountOfCube + RobotSettings.cubeSize/2 + 1.5;
 		
 		// fixing the first joint distance from cube, the sensor is closer to the cube
 		distance += 3;
@@ -273,6 +273,44 @@ public class MovmentSystem implements Stoppable{
 		 System.out.println("elbow need to move:" + (90 - a2_degrees));
 	}
 
+	
+	public void bring_to_fix_place() throws InterruptedException, ConnectionLostException{
+
+		double PositionToGet = 0.5464321;
+		float elbowPosition = get_elbowPosition();
+		if (elbowPosition < PositionToGet){
+			_arm.elbowDown();
+			while(get_elbowPosition() < PositionToGet){
+				Thread.sleep(10);
+			}
+		}
+		else if (elbowPosition > PositionToGet){
+			_arm.elbowUp();
+			while(get_elbowPosition() > PositionToGet){
+				Thread.sleep(10);
+			}
+			
+		}
+		_arm.stop();
+		PositionToGet = 0.629521;
+		float sholderPosition= get_sholderPosition();
+		if (sholderPosition > PositionToGet){
+			_arm.sholderDown();
+			while(get_sholderPosition() > PositionToGet){
+				Thread.sleep(10);
+			}
+		}
+		
+		else if (sholderPosition < PositionToGet){
+			_arm.sholderUp();
+			while (get_sholderPosition() < PositionToGet){
+				Thread.sleep(10);
+			}
+		}
+		_arm.stop();
+		
+	}
+	
 	/**
 	 * turn around in place
 	 * @param dgree a degree to be turned
@@ -408,8 +446,8 @@ public class MovmentSystem implements Stoppable{
 	 * @throws InterruptedException
 	 */
 	public void bringArmUp() throws ConnectionLostException, InterruptedException {
-		this.moveSholder(90);
-		this.moveElbow(70);
+		this.moveSholder(45);
+		this.moveElbow(45);
 	}
 	
 	/**
@@ -421,6 +459,7 @@ public class MovmentSystem implements Stoppable{
 	public void takeCube() throws ConnectionLostException, InterruptedException, NanExeption{
 		//this.moveArm(15/*this.getDistanceCentimeters()*/);
 		this.moveArmToPutCube(13, 1, this.SHOLDER_FIRST);
+		//bring_to_fix_place();
 		this.grabCube();
 		Thread.sleep((long)(RobotSettings.clawTime * 1000));
 		this.bringArmUp();
@@ -435,8 +474,9 @@ public class MovmentSystem implements Stoppable{
 	 * @throws NanExeption 
 	 */
 	public void placeCube(int level) throws ConnectionLostException, InterruptedException, NanExeption{
-		this.moveArmToPutCube(get_distance(), level * RobotSettings.cubeSize, SHOLDER_FIRST);
+		this.moveArmToPutCube(13, 2, SHOLDER_FIRST);
 		this.releaseCube();
+		Thread.sleep((long)(RobotSettings.clawTime * 1000));
 		this.bringArmUp();
 	}
 	
@@ -453,5 +493,10 @@ public class MovmentSystem implements Stoppable{
 	public void moveArm(int sholder, int elbow) throws ConnectionLostException, InterruptedException {
 		this.moveSholder(sholder);
 		this.moveElbow(elbow);
+	}
+	
+	public void initArm() throws ConnectionLostException, InterruptedException{
+	    this.releaseCube();
+		bringArmUp();
 	}
 }

@@ -7,7 +7,7 @@ public class CubeInfo {
 	private double distance;
 	private Color color;
 	private boolean found;
-	private MovingAvg sensDistAvg = new MovingAvg(10);
+	private MovingAvg sensDistAvg = new MovingAvg(5);
 	
 	
 	protected CubeInfo(){
