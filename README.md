@@ -13,17 +13,9 @@ The project is based on the IOIO framework which uses an android phone as a proc
 the final goal is to build an application that takes an array of colors as an input, 
 searches for cubes that has the same colors and builds a tower according to that array.
 
-Project Goals
+Installation
 ------------
-<ul>
-	<li><del>read material </del></li>
-	<li><del>assemble the parts and modules</del></li>
-	<li><del>build an android remote control application</del></li>
-	<li><del>render an API for later applications</del></li>
-	<li><del>rwrite the final application</del></li>
-	<li><del>write documentation on the robot for the following projects</del></li>
-</ul>
-
+check out the Apps folder or download <a href="https://github.com/doronAtuar/Autonomous-Tower-Builder-Robot/blob/master/Apps/RobRemote.apk?raw=true">the remote control here</a>
 Members Names
 -------------
 Doron Atuar<br>
