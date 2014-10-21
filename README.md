@@ -20,9 +20,8 @@ Project Goals
 	<li><del>assemble the parts and modules</del></li>
 	<li><del>build an android remote control application</del></li>
 	<li><del>render an API for later applications</del></li>
-	<li>write a client-server for controlling and debugging the robot's code on a PC</li>
-	<li>write the final application</li>
-	<li>write documentation on the robot for the following projects</li>
+	<li><del>rwrite the final application</del></li>
+	<li><del>write documentation on the robot for the following projects</del></li>
 </ul>
 
 Members Names
