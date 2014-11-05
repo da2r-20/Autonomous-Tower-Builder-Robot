@@ -5,7 +5,7 @@ Magical Robot
 
 ![](https://drive.google.com/uc?export=download&id=0B63Dw65h1VABQ1BLZzRmUEw0N2M)
 
-[![ScreenShot](https://github.com/doronAtuar/Autonomous-Tower-Builder-Robot/raw/master/images/photo%209.JPG)](//www.youtube.com/embed/iwM6HwGznec)
+[![ScreenShot](http://img.youtube.com/vi/iwM6HwGznec/0.jpg)](//www.youtube.com/embed/iwM6HwGznec)
 
 We are 4 Computer-Science students from Ben-Gurion University, Israel.<br>
 This is our final project <br>
